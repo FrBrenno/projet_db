@@ -148,6 +148,10 @@ for diagnostic in root.findall('diagnostique'):
 
     pathology = diagnostic.find('pathology').text
     specialite = diagnostic.find('specialite').text
+    if specialite == " Dermatologie et vénérologie":
+        specialite = "Dermatologie et vénérologie"
+    elif specialite == " Gynécologie médicale":
+        specialite = "Gynécologie médicale"
     mycursor.execute("INSERT INTO diagnostiques (NISS, date_diagnostic, naissance, pathology, specialite) VALUES (%s, %s, %s, %s, %s)",(NISS, date_diagnostic, naissance, pathology, specialite))
 
 #imports des specialites
@@ -158,14 +162,14 @@ for specialite in root.findall('specialite'):
     for i, medicament in enumerate(specialite.findall('medicament')):
         if i == 0:
             medicament1 = medicament.text
-        if i == 1:
+        elif i == 1:
             medicament2 = medicament.text
-        if i == 2:
+        elif i == 2:
             medicament3 = medicament.text
     if i == 0:
         medicament2 = None
         medicament3 = None
-    if i == 1:
+    elif i == 1:
         medicament3 = None
     mycursor.execute("INSERT INTO specialites (nom, medicament1, medicament2, medicament3) VALUES (%s, %s, %s, %s)",(nom, medicament1, medicament2, medicament3))
 

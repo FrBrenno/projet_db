@@ -22,9 +22,12 @@ def requete2():
     for x in mycursor:
         print(x)
 
-
-
-
+def requete3():
+         #La spécialité de médecins pour laquelle les médecins prescrivent le plus de médicaments.
+    mycursor.execute("SELECT specialite, COUNT(*) AS occurences FROM diagnostiques GROUP BY specialite ORDER BY occurences DESC LIMIT 15")
+    for x in mycursor:
+        print(x)
 
 #requete1()
-requete2()
+#requete2()
+requete3()
