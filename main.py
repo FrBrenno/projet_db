@@ -85,6 +85,7 @@ with open("data/pathologies.csv", encoding='utf-8') as csvfile:
 
 
 #import des fichiers xml
+
 #import des medecins
 tree = ET.parse('data/medecins.xml')
 root = tree.getroot()
