@@ -84,10 +84,13 @@ with open("data/pathologies.csv", encoding='utf-8') as csvfile:
     csvreader = csv.reader(csvfile, delimiter=',')
     for row in csvreader:
         if row[0] != "maladie":
-
-            mycursor.execute(
-                "INSERT INTO pathologies (maladie, systemes) VALUES (%s, %s)",
-                row)
+            #vérifie que la maladie n'est pas déjà dans la base de données avec le même système anatomique
+            mycursor.execute("SELECT * FROM pathologies WHERE maladie = %s AND systemes = %s", (row[0], row[1]))
+            result = mycursor.fetchall()
+            if len(result) == 0:
+                mycursor.execute(
+                        "INSERT INTO pathologies (maladie, systemes) VALUES (%s, %s)",
+                        row)
 
 
 #import des fichiers xml

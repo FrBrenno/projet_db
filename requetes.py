@@ -18,7 +18,7 @@ def requete1():
 
 def requete2():
     # La liste des pathologies qui peuvent être prise en charge par un seul type de spécialistes.
-    mycursor.execute("SELECT maladie FROM pathologies GROUP BY maladie HAVING COUNT(maladie) = 1")
+    mycursor.execute("SELECT maladie FROM pathologies GROUP BY maladie HAVING COUNT(maladie) = 2")
     for x in mycursor:
         print(x)
 
