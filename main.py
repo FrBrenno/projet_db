@@ -30,9 +30,11 @@ mycursor.execute("CREATE TABLE IF NOT EXISTS medecins (inami BIGINT, nom TEXT, s
 
 mycursor.execute("CREATE TABLE IF NOT EXISTS patients (NISS BIGINT, nom TEXT, prenom TEXT, date_de_naissance DATE, genre INT, inami_medecin BIGINT, inami_pharmacien BIGINT, mail TEXT, telephone BIGINT)")
 
+mycursor.execute("CREATE TABLE IF NOT EXISTS pharmaciens (inami BIGINT, nom TEXT, mail TEXT, telephone BIGINT)")
 
+mycursor.execute("CREATE TABLE IF NOT EXISTS diagnostiques (NISS BIGINT, date_diagnostic DATE, naissance DATE, pathology TEXT, specialite TEXT)")
 
-
+mycursor.execute("CREATE TABLE IF NOT EXISTS specialites (nom TEXT, medicament1 TEXT, medicament2 TEXT, medicament3 TEXT)")
 
 
 
@@ -112,7 +114,50 @@ for patient in root.findall('patient'):
     telephone = patient.find('telephone').text
     mycursor.execute("INSERT INTO patients (NISS, nom, prenom, date_de_naissance, genre, inami_medecin, inami_pharmacien, mail, telephone) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",(NISS, nom, prenom, date_de_naissance, genre, inami_medecin, inami_pharmacien, mail, telephone))
 
+#imports des pharmaciens
+tree = ET.parse('data/pharmaciens.xml')
+root = tree.getroot()
+for pharmacien in root.findall('pharmacien'):
+    inami = pharmacien.find('inami').text
+    mail = pharmacien.find('mail').text
+    nom = pharmacien.find('nom').text
+    telephone = pharmacien.find('tel').text
+    mycursor.execute("INSERT INTO pharmaciens (inami, nom, mail, telephone) VALUES (%s, %s, %s, %s)",(inami, nom, mail, telephone))
 
+#imports des diagnostics
+tree = ET.parse('data/diagnostiques.xml')
+root = tree.getroot()
+for diagnostic in root.findall('diagnostique'):
+    NISS = diagnostic.find('NISS').text
+
+    date_diagnostic_mauvais_format = diagnostic.find('date_diagnostic').text
+    date_diagnostic = datetime.datetime.strptime(date_diagnostic_mauvais_format, "%m/%d/%Y").strftime("%Y-%m-%d")
+
+    naissance_mauvais_format = diagnostic.find('naissance').text
+    naissance = datetime.datetime.strptime(naissance_mauvais_format, "%m/%d/%Y").strftime("%Y-%m-%d")
+
+    pathology = diagnostic.find('pathology').text
+    specialite = diagnostic.find('specialite').text
+    mycursor.execute("INSERT INTO diagnostiques (NISS, date_diagnostic, naissance, pathology, specialite) VALUES (%s, %s, %s, %s, %s)",(NISS, date_diagnostic, naissance, pathology, specialite))
+
+#imports des specialites
+tree = ET.parse('data/specialites.xml')
+root = tree.getroot()
+for specialite in root.findall('specialite'):
+    nom = specialite.find('name').text
+    for i, medicament in enumerate(specialite.findall('medicament')):
+        if i == 0:
+            medicament1 = medicament.text
+        if i == 1:
+            medicament2 = medicament.text
+        if i == 2:
+            medicament3 = medicament.text
+    if i == 0:
+        medicament2 = None
+        medicament3 = None
+    if i == 1:
+        medicament3 = None
+    mycursor.execute("INSERT INTO specialites (nom, medicament1, medicament2, medicament3) VALUES (%s, %s, %s, %s)",(nom, medicament1, medicament2, medicament3))
 
 # Sauvegarder les modifications
 db.commit()
