@@ -1,4 +1,4 @@
-
+<diagnostiques>
   <diagnostique>
     <NISS>184232301592</NISS>
     <date_diagnostic>01/25/1991</date_diagnostic>
@@ -8727,3 +8727,4 @@
     <pathology>Polymyalgia rheumatica</pathology>
     <specialite>Rhumatologie</specialite>
   </diagnostique>
+</diagnostiques>

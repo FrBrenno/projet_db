@@ -1,4 +1,4 @@
-
+<patients>
   <patient>
     <NISS>184232301592</NISS>
     <date_de_naissance>03/28/1924</date_de_naissance>
@@ -3559,3 +3559,4 @@
     <prenom>Godefroy</prenom>
     <telephone>+3267533128178</telephone>
   </patient>
+</patients>
