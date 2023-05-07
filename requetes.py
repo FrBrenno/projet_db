@@ -20,7 +20,7 @@ def requete1():
     return res
 def requete2():
     # La liste des pathologies qui peuvent être prise en charge par un seul type de spécialistes.
-    mycursor.execute("SELECT maladie FROM pathologies GROUP BY maladie HAVING COUNT(maladie) = 2")
+    mycursor.execute("SELECT maladie FROM pathologies GROUP BY maladie HAVING COUNT(maladie) = 1")
     res = ""
     for x in mycursor:
         res += str(x) + "\n"
@@ -36,5 +36,5 @@ def requete3():
     return res
 
 #requete1()
-#requete2()
+requete2()
 #requete3()

@@ -8,7 +8,7 @@ from requetes import *
 usr32 = ctypes.windll.user32
 width = usr32.GetSystemMetrics(0)
 height = usr32.GetSystemMetrics(1)
-res = str(width) + "x" + str(height)
+res = "1500x1500"
 print(width, height)
 
 
