@@ -1,4 +1,5 @@
 import datetime
+import os
 import xml.etree.ElementTree as ElemTree
 import csv
 
@@ -31,7 +32,7 @@ def import_data(mydb):
 
 
 def import_csv_data(mycursor):
-    with open("data/dossiers_patients.csv", encoding='utf-8') as csvfile:
+    with open("../data/dossiers_patients.csv", encoding='utf-8') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',')
         for row in csvreader:
 
@@ -46,13 +47,13 @@ def import_csv_data(mycursor):
                 mycursor.execute("INSERT INTO dossiers_patients (NISS_patient, medecin, inami_medecin, pharmacien, "
                                  "inami_pharmacien, medicament_nom_commercial, DCI, date_prescription, date_vente, "
                                  "duree_traitement) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", row)
-    with open("data/medicaments.csv", encoding='utf-8') as csvfile:
+    with open("../data/medicaments.csv", encoding='utf-8') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',')
         for row in csvreader:
             if row[0] != "dci":
                 mycursor.execute("INSERT INTO medicaments (dci, nom_Commercial, système_anatomique, conditionnement) "
                                  "VALUES (%s, %s, %s, %s)", row)
-    with open("data/pathologies.csv", encoding='utf-8') as csvfile:
+    with open("../data/pathologies.csv", encoding='utf-8') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',')
         for row in csvreader:
             if row[0] != "maladie":
@@ -67,7 +68,7 @@ def import_csv_data(mycursor):
 
 def import_xml_data(mycursor):
     # import des medecins
-    tree = ElemTree.parse('data/medecins.xml')
+    tree = ElemTree.parse('../data/medecins.xml')
     root = tree.getroot()
     for medecin in root.findall('medecin'):
         inami = medecin.find('inami').text
@@ -78,7 +79,7 @@ def import_xml_data(mycursor):
         mycursor.execute("INSERT INTO medecins (inami, nom, specialite, telephone, mail) VALUES (%s, %s, %s, %s, %s)",
                          (inami, nom, specialite, telephone, mail))
     # imports des patients
-    tree = ElemTree.parse('data/patients.xml')
+    tree = ElemTree.parse('../data/patients.xml')
     root = tree.getroot()
     for patient in root.findall('patient'):
         NISS = patient.find('NISS').text
@@ -97,7 +98,7 @@ def import_xml_data(mycursor):
             "INSERT INTO patients (NISS, nom, prenom, date_de_naissance, genre, inami_medecin, inami_pharmacien, mail, telephone) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
             (NISS, nom, prenom, date_de_naissance, genre, inami_medecin, inami_pharmacien, mail, telephone))
     # imports des pharmaciens
-    tree = ElemTree.parse('data/pharmaciens.xml')
+    tree = ElemTree.parse('../data/pharmaciens.xml')
     root = tree.getroot()
     for pharmacien in root.findall('pharmacien'):
         inami = pharmacien.find('inami').text
@@ -107,7 +108,7 @@ def import_xml_data(mycursor):
         mycursor.execute("INSERT INTO pharmaciens (inami, nom, mail, telephone) VALUES (%s, %s, %s, %s)",
                          (inami, nom, mail, telephone))
     # imports des diagnostics
-    tree = ElemTree.parse('data/diagnostiques.xml')
+    tree = ElemTree.parse('../data/diagnostiques.xml')
     root = tree.getroot()
     for diagnostic in root.findall('diagnostique'):
         NISS = diagnostic.find('NISS').text
@@ -128,7 +129,7 @@ def import_xml_data(mycursor):
             "INSERT INTO diagnostiques (NISS, date_diagnostic, naissance, pathology, specialite) VALUES (%s, %s, %s, %s, %s)",
             (NISS, date_diagnostic, naissance, pathology, specialite))
     # imports des specialites
-    tree = ElemTree.parse('data/specialites.xml')
+    tree = ElemTree.parse('../data/specialites.xml')
     root = tree.getroot()
     for specialite in root.findall('specialite'):
         nom = specialite.find('name').text

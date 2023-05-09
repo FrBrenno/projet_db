@@ -1,3 +1,4 @@
+import os
 import tkinter as tk
 from tkinter import ttk
 import ctypes
@@ -28,7 +29,7 @@ db = mysql.connector.connect(
     passwd="alex"
 )
 mycursor = db.cursor()
-mycursor.execute("USE mydatabase")
+#mycursor.execute("USE mydatabase")
 
 
 class MainApplication(tk.Frame):
@@ -78,7 +79,11 @@ class MainApplication(tk.Frame):
         self.button10.grid(row=2, column=4, padx=10, pady=10, sticky="nsew")
 
         # configure grid weights to make the text widget expand to fill any extra space
-        self.parent.columnconfigure(1, weight=1)
+        self.parent.columnconfigure(0,  weight=1)
+        self.parent.columnconfigure(1,  weight=1)
+        self.parent.columnconfigure(2,  weight=1)
+        self.parent.columnconfigure(3,  weight=1)
+        self.parent.columnconfigure(4,  weight=1)
         self.parent.rowconfigure(0, weight=1)
 
     def afficher_requete1(self):
@@ -126,8 +131,10 @@ class MainApplication(tk.Frame):
 if __name__ == "__main__":
     """ DATABASE SETUP """
 
-    # create_database(db)
-    # import_data(db)
+
+    print(os.getcwd())
+    create_database(db)
+    import_data(db)
 
     """ GUI SETUP """
     root = tk.Tk()
