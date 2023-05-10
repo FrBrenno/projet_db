@@ -3,15 +3,23 @@ import tkinter as tk
 from tkinter import ttk
 import ctypes
 import mysql.connector
+import sys
 
 from create_database import create_database
 from import_data import import_data
 from requetes import *
 
-usr32 = ctypes.windll.user32
-# get the screen resolution of the device
-screen_width = usr32.GetSystemMetrics(0)
-screen_height = usr32.GetSystemMetrics(1)
+if sys.platform.startswith('darwin') :
+    print("Running on Mac")
+    screen_width = 2560
+    screen_height = 1600
+elif sys.platform.startswith('win'):
+    print("Running on Windows")
+    usr32 = ctypes.windll.user32
+    # get the screen resolution of the device
+    screen_width = usr32.GetSystemMetrics(0)
+    screen_height = usr32.GetSystemMetrics(1)
+
 
 # set the dimensions of the window
 window_width = 510
@@ -26,7 +34,8 @@ y = int((screen_height - window_height) / 2)
 db = mysql.connector.connect(
     host="localhost",
     user="alex",
-    passwd="alex"
+    passwd="alex",
+    auth_plugin='mysql_native_password'
 )
 mycursor = db.cursor()
 #mycursor.execute("USE mydatabase")
