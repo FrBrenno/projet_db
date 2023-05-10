@@ -1,4 +1,6 @@
 def requete1(mycursor):
+    # La liste des noms commerciaux de médicaments correspondant à un nom en DCI, classés par ordre alphabétique et taille de conditionnement.
+    #TODO:Ajouter une option pour pouvoir choisir le DCI qu'on veux (pour l'instant c'est juste ibuprofene)
     mycursor.execute(
         "SELECT dci, nom_Commercial, conditionnement FROM medicaments WHERE dci = 'ibuprofene' ORDER BY nom_Commercial ASC, conditionnement ASC")
     res = "1. La liste des noms commerciaux de médicaments correspondant à un nom en DCI, classés par ordre alphabétique et taille de conditionnement.\n\n"
@@ -9,7 +11,7 @@ def requete1(mycursor):
 
 def requete2(mycursor):
     # La liste des pathologies qui peuvent être prise en charge par un seul type de spécialistes.
-    mycursor.execute("SELECT maladie FROM pathologies GROUP BY maladie HAVING COUNT(maladie) = 1")
+    mycursor.execute("SELECT maladie FROM pathologies GROUP BY maladie HAVING COUNT(maladie) = 1")        #ici est ce que c'est bien maladie qu'il faut mettre ?
     res = "2. La liste des pathologies qui peuvent être prise en charge par un seul type de spécialistes.\n\n"
     for x in mycursor:
         res += str(x) + "\n"

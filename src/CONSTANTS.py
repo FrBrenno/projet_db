@@ -1,6 +1,6 @@
 import sys
 
-nom = "Mec stylé"
+nom = ""
 
 DOSSIER_PATIENT_CSV = "data/dossiers_patients.csv"
 MEDICAMENT_CSV = "data/medicaments.csv"
