@@ -28,7 +28,7 @@ def create_tables(mycursor):
     mycursor.execute("CREATE TABLE IF NOT EXISTS dossiers_patients (NISS_patient BIGINT, medecin TEXT, inami_medecin "
                      "BIGINT, pharmacien TEXT, inami_pharmacien BIGINT, medicament_nom_commercial TEXT, DCI TEXT, "
                      "date_prescription DATE, date_vente DATE, duree_traitement INTEGER)")
-    mycursor.execute("CREATE TABLE IF NOT EXISTS medicaments (dci TEXT,nom_Commercial TEXT,système_anatomique TEXT,"
+    mycursor.execute("CREATE TABLE IF NOT EXISTS medicaments (dci TEXT,nom_Commercial TEXT,systeme_anatomique TEXT,"
                      "conditionnement INT)")
     mycursor.execute("CREATE TABLE IF NOT EXISTS pathologies (maladie TEXT, systemes TEXT)")
     mycursor.execute(
@@ -39,6 +39,6 @@ def create_tables(mycursor):
     mycursor.execute(
         "CREATE TABLE IF NOT EXISTS diagnostiques (NISS BIGINT, date_diagnostic DATE, naissance DATE, pathology TEXT, specialite TEXT)")
     mycursor.execute(
-        "CREATE TABLE IF NOT EXISTS specialites (nom TEXT, medicament TEXT)")
+        "CREATE TABLE IF NOT EXISTS specialites (nom TEXT, systeme_anatomique TEXT)")
 
 

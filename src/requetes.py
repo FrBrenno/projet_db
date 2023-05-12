@@ -1,8 +1,10 @@
 def requete1(mycursor):
     # La liste des noms commerciaux de médicaments correspondant à un nom en DCI, classés par ordre alphabétique et taille de conditionnement.
+    
     #TODO:Ajouter une option pour pouvoir choisir le DCI qu'on veux (pour l'instant c'est juste ibuprofene)
+    dci = "ibuprofene"
     mycursor.execute(
-        "SELECT dci, nom_Commercial, conditionnement FROM medicaments WHERE dci = 'ibuprofene' ORDER BY nom_Commercial ASC, conditionnement ASC")
+        f"SELECT dci, nom_Commercial, conditionnement FROM medicaments WHERE dci = '{dci}' ORDER BY nom_Commercial ASC, conditionnement ASC")
     res = "1. La liste des noms commerciaux de médicaments correspondant à un nom en DCI, classés par ordre alphabétique et taille de conditionnement.\n\n"
     for x in mycursor:
         res += str(x) + "\n"
@@ -44,6 +46,8 @@ def requete5(mycursor):
 def requete6(mycursor):
     mycursor.execute("")
     res = "6. La liste des médecins ayant prescrit des médicaments ne relevant pas de leur spécialité.\n\n"
+    mycursor.execute(
+        "SELECT DISTINCT m.nom FROM dossiers_patients dp JOIN medecins m ON m.inami = dp.inami_medecin JOIN medicaments md ON md.dci = dp.dci JOIN specialites s ON s.nom = m.specialite AND s.systeme_anatomique != md.systeme_anatomique")
     for x in mycursor:
         res += str(x) + "\n"
     return res

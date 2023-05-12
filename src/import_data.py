@@ -52,7 +52,7 @@ def import_csv_data(mycursor):
         csvreader = csv.reader(csvfile, delimiter=',')
         for row in csvreader:
             if row[0] != "dci":
-                mycursor.execute("INSERT INTO medicaments (dci, nom_Commercial, système_anatomique, conditionnement) "
+                mycursor.execute("INSERT INTO medicaments (dci, nom_Commercial, systeme_anatomique, conditionnement) "
                                  "VALUES (%s, %s, %s, %s)", row)
     with open(PHATOLOGIES_CSV, encoding='utf-8') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',')
@@ -134,10 +134,8 @@ def import_xml_data(mycursor):
     root = tree.getroot()
     for specialite in root.findall('specialite'):
         nom = specialite.find('name').text
-        for medicament in specialite.findall('medicament'):
-            nom_medicament1 = medicament.text
-            nom_medicament2 = medicament.text
-            nom_medicament3 = medicament.text
-            mycursor.execute("INSERT INTO specialites (nom, medicament1, medicament2, medicament3) VALUES (%s, %s, %s, %s)",
-                             (nom, nom_medicament1, nom_medicament2, nom_medicament3))
+        for systeme_anat in specialite.findall('medicament'):
+            systeme_anat = systeme_anat.text
+            mycursor.execute("INSERT INTO specialites (nom, systeme_anatomique) VALUES (%s, %s)",
+                             (nom, systeme_anat))
 

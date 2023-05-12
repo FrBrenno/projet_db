@@ -8,9 +8,7 @@ import sys
 from create_database import create_database
 from import_data import import_data
 from requetes import *
-"""
-salut
-"""
+
 if sys.platform.startswith('darwin') :
     print("Running on Mac")
     screen_width = 2560
@@ -136,6 +134,8 @@ class MainApplication(tk.Frame):
     def afficher_requete10(self):
         self.text.delete('1.0', tk.END)
         self.text.insert(tk.END, requete10(mycursor))
+
+
 
 if __name__ == "__main__":
     """ DATABASE SETUP """
