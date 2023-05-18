@@ -1,8 +1,11 @@
 import tkinter as tk
+from datetime import datetime
 from tkinter import ttk
 import ctypes
 import mysql.connector
 import sys
+
+from tkcalendar import DateEntry
 
 from create_database import create_database
 from import_data import import_data
@@ -129,6 +132,106 @@ class MainApplication(tk.Frame):
         self.text.delete('1.0', tk.END)
         self.text.insert(tk.END, requete10(mycursor))
 
+    def new_patient_popup(self):
+        popup_window = PopupWindow(self, "Nouveau patient")
+        # Save a reference to the popup window instance to access it later
+        self.popup_window = popup_window
+        popup_window.update()
+        width = popup_window.winfo_reqwidth()
+        height = popup_window.winfo_reqheight()
+        x = (self.winfo_screenwidth() - width) // 2
+        y = (self.winfo_screenheight() - height) // 2
+        popup_window.geometry(f"{width}x{height}+{x}+{y}")
+
+    def handle_submitted_data(self, data):
+        self.text.delete('1.0', tk.END)
+        self.text.insert(tk.END, insert_patient(mycursor, data))
+        db.commit()
+
+
+class PopupWindow(tk.Toplevel):
+    def __init__(self, parent, title):
+        super().__init__(parent)
+        self.parent = parent
+        self.title(title)
+
+        self.label_niss = tk.Label(self, text="NISS:")
+        self.label_niss.grid(row=0, column=0, padx=10, pady=10)
+        self.entry_niss = tk.Entry(self)
+        self.entry_niss.grid(row=0, column=1, padx=10, pady=10)
+
+        self.label_medecin = tk.Label(self, text="Medecin:")
+        self.label_medecin.grid(row=1, column=0, padx=10, pady=10)
+        self.entry_medecin = tk.Entry(self)
+        self.entry_medecin.grid(row=1, column=1, padx=10, pady=10)
+
+        self.label_inami_medecin = tk.Label(self, text="INAMI Medecin:")
+        self.label_inami_medecin.grid(row=2, column=0, padx=10, pady=10)
+        self.entry_inami_medecin = tk.Entry(self)
+        self.entry_inami_medecin.grid(row=2, column=1, padx=10, pady=10)
+
+        self.label_pharmacien = tk.Label(self, text="Pharmacien:")
+        self.label_pharmacien.grid(row=3, column=0, padx=10, pady=10)
+        self.entry_pharmacien = tk.Entry(self)
+        self.entry_pharmacien.grid(row=3, column=1, padx=10, pady=10)
+
+        self.label_inami_pharmacien = tk.Label(self, text="INAMI Pharmacien:")
+        self.label_inami_pharmacien.grid(row=4, column=0, padx=10, pady=10)
+        self.entry_inami_pharmacien = tk.Entry(self)
+        self.entry_inami_pharmacien.grid(row=4, column=1, padx=10, pady=10)
+
+        self.label_medicament_nom_commercial = tk.Label(self, text="Nom commercial medicament:")
+        self.label_medicament_nom_commercial.grid(row=5, column=0, padx=10, pady=10)
+        self.entry_medicament_nom_commercial = tk.Entry(self)
+        self.entry_medicament_nom_commercial.grid(row=5, column=1, padx=10, pady=10)
+
+        self.label_dci = tk.Label(self, text="DCI:")
+        self.label_dci.grid(row=6, column=0, padx=10, pady=10)
+        self.entry_dci = tk.Entry(self)
+        self.entry_dci.grid(row=6, column=1, padx=10, pady=10)
+
+        self.label_date_presciption = tk.Label(self, text="Date de prescription:")
+        self.label_date_presciption.grid(row=7, column=0, padx=10, pady=10)
+        self.entry_date_presciption = DateEntry(self, date_pattern="dd/mm/yyyy")
+        self.entry_date_presciption.grid(row=7, column=1, padx=10, pady=10)
+
+        self.label_date_vente = tk.Label(self, text="Date de vente:")
+        self.label_date_vente.grid(row=8, column=0, padx=10, pady=10)
+        self.entry_date_vente = DateEntry(self, date_pattern="dd/mm/yyyy")
+        self.entry_date_vente.grid(row=8, column=1, padx=10, pady=10)
+
+        self.label_duree_traitement = tk.Label(self, text="Duree de traitement:")
+        self.label_duree_traitement.grid(row=9, column=0, padx=10, pady=10)
+        self.entry_duree_traitement = tk.Entry(self)
+        self.entry_duree_traitement.grid(row=9, column=1, padx=10, pady=10)
+
+        self.button_submit = tk.Button(self, text="Enregistrer", command=self.submit_patient)
+        self.button_submit.grid(row=10, column=0, columnspan=2, padx=10, pady=10)
+
+    def submit_patient(self):
+        # Call a method in MainApplication to handle the submitted data
+        date_prescription = datetime.strftime(self.entry_date_presciption.get_date(), "%Y-%m-%d")
+        date_vente = datetime.strftime(self.entry_date_vente.get_date(), "%Y-%m-%d")
+        self.parent.handle_submitted_data(
+            [self.entry_niss.get(),
+             self.entry_medecin.get(),
+             self.entry_inami_medecin.get(),
+             self.entry_pharmacien.get(),
+             self.entry_inami_pharmacien.get(),
+             self.entry_medicament_nom_commercial.get(),
+             self.entry_dci.get(),
+             date_prescription,
+             date_vente,
+             self.entry_duree_traitement.get()
+             ]
+        )
+        self.destroy()
+
+
+def reset_db():
+    # Drop all tables
+    mycursor.execute("DROP DATABASE IF EXISTS mydatabase")
+    db.commit()
 
 
 if __name__ == "__main__":
