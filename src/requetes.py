@@ -1,7 +1,7 @@
 def requete1(mycursor):
     # La liste des noms commerciaux de médicaments correspondant à un nom en DCI, classés par ordre alphabétique et taille de conditionnement.
-    
-    #TODO:Ajouter une option pour pouvoir choisir le DCI qu'on veux (pour l'instant c'est juste ibuprofene)
+
+    # TODO:Ajouter une option pour pouvoir choisir le DCI qu'on veux (pour l'instant c'est juste ibuprofene)
     dci = "ibuprofene"
     mycursor.execute(
         f"SELECT dci, nom_Commercial, conditionnement FROM medicaments WHERE dci = '{dci}' ORDER BY nom_Commercial ASC, conditionnement ASC")
@@ -13,7 +13,8 @@ def requete1(mycursor):
 
 def requete2(mycursor):
     # La liste des pathologies qui peuvent être prise en charge par un seul type de spécialistes.
-    mycursor.execute("SELECT maladie FROM pathologies GROUP BY maladie HAVING COUNT(maladie) = 1")        #ici est ce que c'est bien maladie qu'il faut mettre ?
+    mycursor.execute(
+        "SELECT maladie FROM pathologies GROUP BY maladie HAVING COUNT(maladie) = 1")  # ici est ce que c'est bien maladie qu'il faut mettre ?
     res = "2. La liste des pathologies qui peuvent être prise en charge par un seul type de spécialistes.\n\n"
     for x in mycursor:
         res += str(x) + "\n"
@@ -29,6 +30,7 @@ def requete3(mycursor):
         res += str(x) + "\n"
     return res
 
+
 def requete4(mycursor):
     mycursor.execute("")
     res = "4. Tous les utilisateurs ayant consommé un médicament spécifique (sous son nom commercial) après une date donnée, par exemple en cas de rappel de produit pour lot contaminé. \n\n"
@@ -36,12 +38,14 @@ def requete4(mycursor):
         res += str(x) + "\n"
     return res
 
+
 def requete5(mycursor):
     mycursor.execute("")
     res = "5. Tous les patients ayant été traités par un médicament (sous sa DCI) à une date antérieure mais qui ne le sont plus, pour vérifier qu’un patients suive bien un traitement chronique.\n\n"
     for x in mycursor:
         res += str(x) + "\n"
     return res
+
 
 def requete6(mycursor):
     mycursor.execute("")
@@ -52,12 +56,14 @@ def requete6(mycursor):
         res += str(x) + "\n"
     return res
 
+
 def requete7(mycursor):
     mycursor.execute("")
     res = "7. Pour chaque décennie entre 1950 et 2020, (1950 − 59, 1960 − 69, ...), le médicament le plus consommé par des patients nés durant cette décennie.\n\n"
     for x in mycursor:
         res += str(x) + "\n"
     return res
+
 
 def requete8(mycursor):
     mycursor.execute("")
@@ -66,6 +72,7 @@ def requete8(mycursor):
         res += str(x) + "\n"
     return res
 
+
 def requete9(mycursor):
     mycursor.execute("")
     res = "9. Pour chaque patient, le nombre de médecin lui ayant prescrit un médicament.\n\n"
@@ -73,9 +80,20 @@ def requete9(mycursor):
         res += str(x) + "\n"
     return res
 
+
 def requete10(mycursor):
     mycursor.execute("")
     res = "10. La liste de médicament n’étant plus prescrit depuis une date spécifique.\n\n"
     for x in mycursor:
         res += str(x) + "\n"
+    return res
+
+
+def insert_patient(mycursor, data):
+    res = "Insertion d'un patient\n\n"
+    mycursor.execute(
+        "INSERT INTO dossiers_patients (NISS_patient, medecin, inami_medecin, pharmacien, inami_pharmacien, medicament_nom_commercial, DCI, date_prescription, date_vente, duree_traitement) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        data)
+    for elem in data:
+        res += str(elem) + "\n"
     return res
