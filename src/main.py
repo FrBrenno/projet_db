@@ -183,10 +183,45 @@ class PopupWindow(tk.Toplevel):
             for i in range(0, len(form_data) - 2):
                 if form_data[i] == "":
                     messagebox.showerror("Erreur", "Veuillez remplir tous les champs obligatoire")
-        elif type == "medecin" or type == "pharmacien":
+                    return False
+                if not form_data[0].isnumeric():
+                    messagebox.showerror("Erreur", "Veuillez entrer un numéro de registre national valide")
+                    return False
+                elif not form_data[5].isnumeric():
+                    messagebox.showerror("Erreur", "Veuillez entrer un INAMI médecin valide")
+                    return False
+                elif not form_data[6].isnumeric():
+                    messagebox.showerror("Erreur", "Veuillez entrer un INAMI pharmacien valide")
+                    return False
+                elif not form_data[8].isnumeric():
+                    messagebox.showerror("Erreur", "Veuillez entrer un numéro de téléphone valide")
+                    return False
+
+        elif type == "medecin":
             # Only mail could be empty
-            if form_data[-1] == "":
-                messagebox.showerror("Erreur", "Veuillez remplir tous les champs obligatoire")
+            for i in range(0, len(form_data) - 1):
+                if form_data[i] == "":
+                    messagebox.showerror("Erreur", "Veuillez remplir tous les champs obligatoire")
+                    return False
+                if not form_data[0].isnumeric():
+                    messagebox.showerror("Erreur", "Veuillez entrer un INAMI valide")
+                    return False
+                elif not form_data[3].isnumeric():
+                    messagebox.showerror("Erreur", "Veuillez entrer un numéro de téléphone valide")
+                    return False
+        elif type == "pharmacien":
+            # Only mail could be empty
+            for i in range(0, len(form_data) - 1):
+                if form_data[i] == "":
+                    messagebox.showerror("Erreur", "Veuillez remplir tous les champs obligatoire")
+                    return False
+                elif not form_data[0].isnumeric():
+                    messagebox.showerror("Erreur", "Veuillez entrer un INAMI valide")
+                    return False
+                elif not form_data[3].isnumeric():
+                    messagebox.showerror("Erreur", "Veuillez entrer un numéro de téléphone valide")
+                    return False
+        return True
 
     def create_form(self, *args):
         # Clear existing form elements
@@ -248,10 +283,10 @@ class PopupWindow(tk.Toplevel):
             self.entry_nom_medecin = tk.Entry(self)
             self.entry_nom_medecin.grid(row=2, column=1, padx=10, pady=10)
 
-            self.label_prenom_patient = tk.Label(self, text="INAMI(*):")
-            self.label_prenom_patient.grid(row=3, column=0, padx=10, pady=10)
-            self.entry_prenom_patient = tk.Entry(self)
-            self.entry_prenom_patient.grid(row=3, column=1, padx=10, pady=10)
+            self.label_inami_medecin = tk.Label(self, text="INAMI(*):")
+            self.label_inami_medecin.grid(row=3, column=0, padx=10, pady=10)
+            self.entry_inami_medecin = tk.Entry(self)
+            self.entry_inami_medecin.grid(row=3, column=1, padx=10, pady=10)
 
             self.label_specialite_medecin = tk.Label(self, text="Spécialité(*):")
             self.label_specialite_medecin.grid(row=4, column=0, padx=10, pady=10)
@@ -302,8 +337,8 @@ class PopupWindow(tk.Toplevel):
     def submit_patient(self):
         date_naissance = datetime.strftime(self.entry_date_naissance_patient.get_date(), "%Y-%m-%d")
         form_data = [self.entry_niss_patient.get(),
-                     self.entry_nom_patient.get(),
-                     self.entry_prenom_patient.get(),
+                     self.entry_nom_patient.get().upper(),
+                     self.entry_prenom_patient.get().capitalize(),
                      date_naissance,
                      self.entry_genre_patient.get(),
                      self.entry_inami_medecin_patient.get(),
@@ -312,23 +347,25 @@ class PopupWindow(tk.Toplevel):
                      self.entry_telephone_patient.get()
                      ]
 
-        self.validate_data(form_data, "patient")
+        data_validated = self.validate_data(form_data, "patient")
 
-        self.parent.handle_submitted_data(form_data, "patient")
-        self.destroy()
+        if data_validated:
+            self.parent.handle_submitted_data(form_data, "patient")
+            self.destroy()
 
     def submit_medecin(self):
-        form_data = [self.entry_prenom_patient.get(),
-                     self.entry_nom_medecin.get(),
+        form_data = [self.entry_inami_medecin.get().capitalize(),
+                     self.entry_nom_medecin.get().upper(),
                      self.entry_specialite_medecin.get(),
                      self.entry_telephone_medecin.get(),
                      self.entry_mail_medecin.get()
                      ]
 
-        self.validate_data(form_data, "medecin")
+        data_validated = self.validate_data(form_data, "medecin")
 
-        self.parent.handle_submitted_data(form_data, "medecin")
-        self.destroy()
+        if data_validated:
+            self.parent.handle_submitted_data(form_data, "medecin")
+            self.destroy()
 
     def submit_pharmacien(self):
         form_data = [self.entry_inami_pharmacien.get(),
@@ -337,12 +374,10 @@ class PopupWindow(tk.Toplevel):
                      self.entry_mail_pharmacien.get()
                      ]
 
-        self.validate_data(form_data, "pharmacien")
-
-        self.parent.handle_submitted_data(form_data, "pharmacien")
-        self.destroy()
-
-
+        data_validated = self.validate_data(form_data, "pharmacien")
+        if data_validated:
+            self.parent.handle_submitted_data(form_data, "pharmacien")
+            self.destroy()
 
 
 def reset_db():
