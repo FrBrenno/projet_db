@@ -1,4 +1,3 @@
-import os
 import tkinter as tk
 from tkinter import ttk
 import ctypes
@@ -9,12 +8,19 @@ from create_database import create_database
 from import_data import import_data
 from requetes import *
 
-if sys.platform.startswith('darwin') :
+screen_width = 0
+screen_height = 0
+os_name = ""
+
+# get the screen resolution of the device
+if sys.platform.startswith('darwin'):
     print("Running on Mac")
+    os_name = "Mac"
     screen_width = 2560
     screen_height = 1600
 elif sys.platform.startswith('win'):
     print("Running on Windows")
+    os_name = "Windows"
     usr32 = ctypes.windll.user32
     # get the screen resolution of the device
     screen_width = usr32.GetSystemMetrics(0)
@@ -23,23 +29,11 @@ elif sys.platform.startswith('win'):
 
 # set the dimensions of the window
 window_width = 510
-window_height = 300
+window_height = 400
 
 # calculate the x and y coordinates of the window
 x = int((screen_width - window_width) / 2)
 y = int((screen_height - window_height) / 2)
-
-
-
-db = mysql.connector.connect(
-    host="localhost",
-    user="alex",
-    passwd="alex",
-    auth_plugin='mysql_native_password'
-)
-mycursor = db.cursor()
-#mycursor.execute("USE mydatabase")
-
 
 class MainApplication(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
@@ -140,10 +134,17 @@ class MainApplication(tk.Frame):
 if __name__ == "__main__":
     """ DATABASE SETUP """
 
-
-    print(os.getcwd())
+    db = mysql.connector.connect(
+        host="localhost",
+        user="alex",
+        passwd="alex",
+        auth_plugin='mysql_native_password'
+    )
+    mycursor = db.cursor()
     create_database(db)
-    import_data(db)
+
+    mycursor.execute("USE mydatabase")
+    import_data(db, os_name)
 
     """ GUI SETUP """
     root = tk.Tk()

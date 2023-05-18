@@ -1,8 +1,3 @@
-import mysql.connector
-
-
-
-
 def create_database(mydb):
     mycursor = mydb.cursor()
     mycursor.execute("CREATE DATABASE IF NOT EXISTS mydatabase")
