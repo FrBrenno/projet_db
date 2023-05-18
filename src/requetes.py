@@ -32,8 +32,12 @@ def requete3(mycursor):
 
 
 def requete4(mycursor):
-    mycursor.execute("")
     res = "4. Tous les utilisateurs ayant consommé un médicament spécifique (sous son nom commercial) après une date donnée, par exemple en cas de rappel de produit pour lot contaminé. \n\n"
+    date = "2001-07-30"
+    nom_medicament = "Anfarin"
+    res += f"Date : {date}\nNom du médicament : {nom_medicament}\n\n"
+    mycursor.execute(
+        f"SELECT * FROM patients WHERE NISS IN (SELECT NISS_patient FROM dossiers_patients WHERE date_vente >= '{date}' AND medicament_nom_commercial = '{nom_medicament}')")
     for x in mycursor:
         res += str(x) + "\n"
     return res
@@ -58,7 +62,32 @@ def requete6(mycursor):
 
 
 def requete7(mycursor):
-    mycursor.execute("")
+    # Brenno
+    mycursor.execute("""
+        SELECT
+        decade,
+        MAX(most_consumed_medication) AS most_frequent_medication
+        FROM (
+            SELECT 
+                CONCAT((YEAR(t1.date_de_naissance) DIV 10)*10, '-', (YEAR(t1.date_de_naissance) DIV 10)*10 + 9) AS decade,
+                t2.DCI AS most_consumed_medication
+            FROM patients t1
+            JOIN (
+                SELECT
+                    p.date_de_naissance,
+                    d.DCI,
+                    COUNT(*) AS medication_count
+                FROM dossiers_patients d
+                JOIN patients p ON d.NISS_patient = p.NISS
+                GROUP BY p.date_de_naissance, d.DCI
+            ) AS t2 ON YEAR(t2.date_de_naissance) >= YEAR(t1.date_de_naissance) DIV 10 * 10
+                AND YEAR(t2.date_de_naissance) <= YEAR(t1.date_de_naissance) DIV 10 * 10 + 9
+            WHERE YEAR(t1.date_de_naissance) BETWEEN 1950 AND 2020
+            GROUP BY decade, most_consumed_medication
+        ) AS subquery
+        GROUP BY decade
+        ORDER BY decade ASC;
+    """)
     res = "7. Pour chaque décennie entre 1950 et 2020, (1950 − 59, 1960 − 69, ...), le médicament le plus consommé par des patients nés durant cette décennie.\n\n"
     for x in mycursor:
         res += str(x) + "\n"
@@ -82,8 +111,18 @@ def requete9(mycursor):
 
 
 def requete10(mycursor):
-    mycursor.execute("")
     res = "10. La liste de médicament n’étant plus prescrit depuis une date spécifique.\n\n"
+    date = "2001-07-30"
+    res += f"Date : {date}\n\n"
+    mycursor.execute(f"""
+        SELECT DCI
+        FROM mydatabase.dossiers_patients dp1
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM mydatabase.dossiers_patients dp2
+            WHERE dp1.DCI = dp2.DCI AND dp2.date_prescription >= '{date}'
+        )
+    """)
     for x in mycursor:
         res += str(x) + "\n"
     return res
