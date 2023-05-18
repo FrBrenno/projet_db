@@ -1,3 +1,6 @@
+import datetime
+
+
 def requete1(mycursor):
     # La liste des noms commerciaux de médicaments correspondant à un nom en DCI, classés par ordre alphabétique et taille de conditionnement.
 
@@ -14,7 +17,7 @@ def requete1(mycursor):
 def requete2(mycursor):
     # La liste des pathologies qui peuvent être prise en charge par un seul type de spécialistes.
     mycursor.execute(
-        "SELECT maladie FROM pathologies GROUP BY maladie HAVING COUNT(maladie) = 1")  # ici est ce que c'est bien maladie qu'il faut mettre ?
+        "SELECT maladie FROM pathologies GROUP BY maladie HAVING COUNT(DISTINCT specialite) = 1")
     res = "2. La liste des pathologies qui peuvent être prise en charge par un seul type de spécialistes.\n\n"
     for x in mycursor:
         res += str(x) + "\n"
@@ -44,8 +47,9 @@ def requete4(mycursor):
 
 
 def requete5(mycursor):
-    mycursor.execute("")
     res = "5. Tous les patients ayant été traités par un médicament (sous sa DCI) à une date antérieure mais qui ne le sont plus, pour vérifier qu’un patients suive bien un traitement chronique.\n\n"
+    dci = "MONTELUKAST"
+    mycursor.execute(f"SELECT DISTINCT p.nom, p.prenom FROM patients p JOIN dossiers_patients dp ON p.NISS = dp.NISS_patient WHERE dp.DCI = '{dci}' AND DATEDIFF(CURDATE(), date_vente) < duree_traitement ")
     for x in mycursor:
         res += str(x) + "\n"
     return res
@@ -95,8 +99,9 @@ def requete7(mycursor):
 
 
 def requete8(mycursor):
-    mycursor.execute("")
+
     res = "8. Quelle est la pathologie la plus diagnostiquée ?\n\n"
+    mycursor.execute("SELECT pathology, COUNT(*) AS diagnosis_count FROM diagnostiques GROUP BY pathology ORDER BY diagnosis_count DESC LIMIT 100")
     for x in mycursor:
         res += str(x) + "\n"
     return res
