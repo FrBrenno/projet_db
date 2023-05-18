@@ -138,6 +138,12 @@ class MainApplication(tk.Frame):
 
     def inscription_popup(self):
         popup_window = PopupWindow(self, "Inscription")
+        popup_window.update()
+        width = popup_window.winfo_reqwidth()
+        height = popup_window.winfo_reqheight()
+        x = (self.winfo_screenwidth() - width) // 2
+        y = (self.winfo_screenheight() - height) // 2
+        popup_window.geometry(f"{width}x{height}+{x}+{y}")
 
     def handle_submitted_data(self, data, type):
         self.text.delete('1.0', tk.END)
