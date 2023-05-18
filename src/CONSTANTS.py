@@ -11,7 +11,7 @@ PHARMACIENS_XML = 'data/pharmaciens.xml'
 DIAGNOSTIQUES_XML = 'data/diagnostiques.xml'
 SPECIALITES_XML = 'data/specialites.xml'
 
-if nom == "La plèbe":
+if nom == "Windows":
     DOSSIER_PATIENT_CSV = "../" + DOSSIER_PATIENT_CSV
     MEDICAMENT_CSV = "../" + MEDICAMENT_CSV
     PHATOLOGIES_CSV = "../" + PHATOLOGIES_CSV

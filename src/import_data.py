@@ -59,11 +59,11 @@ def import_csv_data(mycursor):
         for row in csvreader:
             if row[0] != "maladie":
                 # vérifie que la maladie n'est pas déjà dans la base de données avec le même système anatomique
-                mycursor.execute("SELECT * FROM pathologies WHERE maladie = %s AND systemes = %s", (row[0], row[1]))
+                mycursor.execute("SELECT * FROM pathologies WHERE maladie = %s AND specialite = %s", (row[0], row[1]))
                 result = mycursor.fetchall()
                 if len(result) == 0:
                     mycursor.execute(
-                        "INSERT INTO pathologies (maladie, systemes) VALUES (%s, %s)",
+                        "INSERT INTO pathologies (maladie, specialite) VALUES (%s, %s)",
                         row)
 
 
