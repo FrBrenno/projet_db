@@ -1,10 +1,11 @@
+import ctypes
+import sys
 import tkinter as tk
 from datetime import datetime
 from tkinter import ttk
-import ctypes
-import mysql.connector
-import sys
+from tkinter import messagebox
 
+import mysql.connector
 from tkcalendar import DateEntry
 
 from create_database import create_database
@@ -137,18 +138,15 @@ class MainApplication(tk.Frame):
 
     def inscription_popup(self):
         popup_window = PopupWindow(self, "Inscription")
-        # # Save a reference to the popup window instance to access it later
-        # self.popup_window = popup_window
-        # popup_window.update()
-        # width = popup_window.winfo_reqwidth()
-        # height = popup_window.winfo_reqheight()
-        # x = (self.winfo_screenwidth() - width) // 2
-        # y = (self.winfo_screenheight() - height) // 2
-        # popup_window.geometry(f"{width}x{height}+{x}+{y}")
 
-    def handle_submitted_data(self, data):
+    def handle_submitted_data(self, data, type):
         self.text.delete('1.0', tk.END)
-        self.text.insert(tk.END, insert_patient(mycursor, data))
+        if type == "patient":
+            self.text.insert(tk.END, insert_patient(mycursor, data))
+        elif type == "medecin":
+            self.text.insert(tk.END, insert_medecin(mycursor, data))
+        elif type == "pharmacien":
+            self.text.insert(tk.END, insert_pharmacien(mycursor, data))
         db.commit()
 
 
@@ -169,14 +167,20 @@ class PopupWindow(tk.Toplevel):
         self.create_form()
         self.type.trace("w", self.create_form)
 
-        self.button_submit = tk.Button(self, text="Enregistrer", command=self.submit_patient)
-        self.button_submit.grid(row=11, column=0, columnspan=3, padx=10, pady=10)
-
-
         self.parent.columnconfigure(0, weight=1)
         self.parent.columnconfigure(1, weight=1)
         self.parent.columnconfigure(2, weight=1)
 
+    def validate_data(self, form_data, type):
+        if type == "patient":
+            # Only mail and telephone could be empty
+            for i in range(0, len(form_data) - 2):
+                if form_data[i] == "":
+                    messagebox.showerror("Erreur", "Veuillez remplir tous les champs obligatoire")
+        elif type == "medecin" or type == "pharmacien":
+            # Only mail could be empty
+            if form_data[-1] == "":
+                messagebox.showerror("Erreur", "Veuillez remplir tous les champs obligatoire")
 
     def create_form(self, *args):
         # Clear existing form elements
@@ -187,84 +191,156 @@ class PopupWindow(tk.Toplevel):
 
         selected_type = self.type.get()
         if selected_type == "patient":
-            self.label_niss = tk.Label(self, text="NISS:")
-            self.label_niss.grid(row=1, column=0, padx=10, pady=10)
-            self.entry_niss = tk.Entry(self)
-            self.entry_niss.grid(row=1, column=1, padx=10, pady=10)
+            self.label_niss_patient = tk.Label(self, text="NISS(*):")
+            self.label_niss_patient.grid(row=1, column=0, padx=10, pady=10)
+            self.entry_niss_patient = tk.Entry(self)
+            self.entry_niss_patient.grid(row=1, column=1, padx=10, pady=10)
 
-            self.label_medecin = tk.Label(self, text="Medecin:")
-            self.label_medecin.grid(row=2, column=0, padx=10, pady=10)
-            self.entry_medecin = tk.Entry(self)
-            self.entry_medecin.grid(row=2, column=1, padx=10, pady=10)
+            self.label_nom_patient = tk.Label(self, text="Nom(*):")
+            self.label_nom_patient.grid(row=2, column=0, padx=10, pady=10)
+            self.entry_nom_patient = tk.Entry(self)
+            self.entry_nom_patient.grid(row=2, column=1, padx=10, pady=10)
 
-            self.label_inami_medecin = tk.Label(self, text="INAMI Medecin:")
-            self.label_inami_medecin.grid(row=3, column=0, padx=10, pady=10)
-            self.entry_inami_medecin = tk.Entry(self)
-            self.entry_inami_medecin.grid(row=3, column=1, padx=10, pady=10)
+            self.label_prenom_patient = tk.Label(self, text="Prénom(*):")
+            self.label_prenom_patient.grid(row=3, column=0, padx=10, pady=10)
+            self.entry_prenom_patient = tk.Entry(self)
+            self.entry_prenom_patient.grid(row=3, column=1, padx=10, pady=10)
 
-            self.label_pharmacien = tk.Label(self, text="Pharmacien:")
-            self.label_pharmacien.grid(row=4, column=0, padx=10, pady=10)
-            self.entry_pharmacien = tk.Entry(self)
-            self.entry_pharmacien.grid(row=4, column=1, padx=10, pady=10)
+            self.label_date_naissance_patient = tk.Label(self, text="Date de naissance(*):")
+            self.label_date_naissance_patient.grid(row=4, column=0, padx=10, pady=10)
+            self.entry_date_naissance_patient = DateEntry(self)
+            self.entry_date_naissance_patient.grid(row=4, column=1, padx=10, pady=10)
 
-            self.label_inami_pharmacien = tk.Label(self, text="INAMI Pharmacien:")
-            self.label_inami_pharmacien.grid(row=5, column=0, padx=10, pady=10)
-            self.entry_inami_pharmacien = tk.Entry(self)
-            self.entry_inami_pharmacien.grid(row=5, column=1, padx=10, pady=10)
+            self.label_genre_patient = tk.Label(self, text="Genre(*):")
+            self.label_genre_patient.grid(row=5, column=0, padx=10, pady=10)
+            self.entry_genre_patient = tk.Entry(self)
+            self.entry_genre_patient.grid(row=5, column=1, padx=10, pady=10)
 
-            self.label_medicament_nom_commercial = tk.Label(self, text="Nom commercial medicament:")
-            self.label_medicament_nom_commercial.grid(row=6, column=0, padx=10, pady=10)
-            self.entry_medicament_nom_commercial = tk.Entry(self)
-            self.entry_medicament_nom_commercial.grid(row=6, column=1, padx=10, pady=10)
+            self.label_inami_medecin_patient = tk.Label(self, text="INAMI du médecin traitant(*):")
+            self.label_inami_medecin_patient.grid(row=6, column=0, padx=10, pady=10)
+            self.entry_inami_medecin_patient = tk.Entry(self)
+            self.entry_inami_medecin_patient.grid(row=6, column=1, padx=10, pady=10)
 
-            self.label_dci = tk.Label(self, text="DCI:")
-            self.label_dci.grid(row=7, column=0, padx=10, pady=10)
-            self.entry_dci = tk.Entry(self)
-            self.entry_dci.grid(row=7, column=1, padx=10, pady=10)
+            self.label_inami_pharmacien_patient = tk.Label(self, text="INAMI du pharmacien(*):")
+            self.label_inami_pharmacien_patient.grid(row=7, column=0, padx=10, pady=10)
+            self.entry_inami_pharmacien_patient = tk.Entry(self)
+            self.entry_inami_pharmacien_patient.grid(row=7, column=1, padx=10, pady=10)
 
-            self.label_date_presciption = tk.Label(self, text="Date de prescription:")
-            self.label_date_presciption.grid(row=8, column=0, padx=10, pady=10)
-            self.entry_date_presciption = DateEntry(self, date_pattern="dd/mm/yyyy")
-            self.entry_date_presciption.grid(row=8, column=1, padx=10, pady=10)
+            self.label_mail_patient = tk.Label(self, text="Mail:")
+            self.label_mail_patient.grid(row=8, column=0, padx=10, pady=10)
+            self.entry_mail_patient = tk.Entry(self)
+            self.entry_mail_patient.grid(row=8, column=1, padx=10, pady=10)
 
-            self.label_date_vente = tk.Label(self, text="Date de vente:")
-            self.label_date_vente.grid(row=9, column=0, padx=10, pady=10)
-            self.entry_date_vente = DateEntry(self, date_pattern="dd/mm/yyyy")
-            self.entry_date_vente.grid(row=9, column=1, padx=10, pady=10)
-
-            self.label_duree_traitement = tk.Label(self, text="Duree de traitement:")
-            self.label_duree_traitement.grid(row=10, column=0, padx=10, pady=10)
-            self.entry_duree_traitement = tk.Entry(self)
-            self.entry_duree_traitement.grid(row=10, column=1, padx=10, pady=10)
+            self.label_telephone_patient = tk.Label(self, text="Téléphone:")
+            self.label_telephone_patient.grid(row=9, column=0, padx=10, pady=10)
+            self.entry_telephone_patient = tk.Entry(self)
+            self.entry_telephone_patient.grid(row=9, column=1, padx=10, pady=10)
 
         elif selected_type == "medecin":
-            self.label_msg = tk.Label(self, text="Medecin")
-            self.label_msg.grid(row=1, column=0, padx=10, pady=10)
+            self.label_nom_medecin = tk.Label(self, text="Nom(*):")
+            self.label_nom_medecin.grid(row=2, column=0, padx=10, pady=10)
+            self.entry_nom_medecin = tk.Entry(self)
+            self.entry_nom_medecin.grid(row=2, column=1, padx=10, pady=10)
+
+            self.label_prenom_patient = tk.Label(self, text="INAMI(*):")
+            self.label_prenom_patient.grid(row=3, column=0, padx=10, pady=10)
+            self.entry_prenom_patient = tk.Entry(self)
+            self.entry_prenom_patient.grid(row=3, column=1, padx=10, pady=10)
+
+            self.label_specialite_medecin = tk.Label(self, text="Spécialité(*):")
+            self.label_specialite_medecin.grid(row=4, column=0, padx=10, pady=10)
+            self.entry_specialite_medecin = tk.Entry(self)
+            self.entry_specialite_medecin.grid(row=4, column=1, padx=10, pady=10)
+
+            self.label_telephone_medecin = tk.Label(self, text="Telephone(*):")
+            self.label_telephone_medecin.grid(row=5, column=0, padx=10, pady=10)
+            self.entry_telephone_medecin = tk.Entry(self)
+            self.entry_telephone_medecin.grid(row=5, column=1, padx=10, pady=10)
+
+            self.label_mail_medecin = tk.Label(self, text="Mail:")
+            self.label_mail_medecin.grid(row=6, column=0, padx=10, pady=10)
+            self.entry_mail_medecin = tk.Entry(self)
+            self.entry_mail_medecin.grid(row=6, column=1, padx=10, pady=10)
         else:
-            self.label_msg = tk.Label(self, text="Pharmacien")
-            self.label_msg.grid(row=1, column=0, padx=10, pady=10)
+            self.label_nom_pharmacien = tk.Label(self, text="Nom(*):")
+            self.label_nom_pharmacien.grid(row=2, column=0, padx=10, pady=10)
+            self.entry_nom_pharmacien = tk.Entry(self)
+            self.entry_nom_pharmacien.grid(row=2, column=1, padx=10, pady=10)
+
+            self.label_inami_pharmacien = tk.Label(self, text="INAMI(*):")
+            self.label_inami_pharmacien.grid(row=3, column=0, padx=10, pady=10)
+            self.entry_inami_pharmacien = tk.Entry(self)
+            self.entry_inami_pharmacien.grid(row=3, column=1, padx=10, pady=10)
+
+            self.label_telephone_pharmacien = tk.Label(self, text="Telephone(*):")
+            self.label_telephone_pharmacien.grid(row=4, column=0, padx=10, pady=10)
+            self.entry_telephone_pharmacien = tk.Entry(self)
+            self.entry_telephone_pharmacien.grid(row=4, column=1, padx=10, pady=10)
+
+            self.label_mail_pharmacien = tk.Label(self, text="Mail:")
+            self.label_mail_pharmacien.grid(row=5, column=0, padx=10, pady=10)
+            self.entry_mail_pharmacien = tk.Entry(self)
+            self.entry_mail_pharmacien.grid(row=5, column=1, padx=10, pady=10)
+
+        self.button_submit = tk.Button(self, text="Enregistrer", command=self.submit)
+        self.button_submit.grid(row=11, column=0, columnspan=3, padx=10, pady=10)
+
+    def submit(self):
+        if self.type.get() == "patient":
+            self.submit_patient()
+        elif self.type.get() == "medecin":
+            self.submit_medecin()
+        else:
+            self.submit_pharmacien()
 
     def submit_patient(self):
-        # Call a method in MainApplication to handle the submitted data
-        date_prescription = datetime.strftime(self.entry_date_presciption.get_date(), "%Y-%m-%d")
-        date_vente = datetime.strftime(self.entry_date_vente.get_date(), "%Y-%m-%d")
-        self.parent.handle_submitted_data(
-            [self.entry_niss.get(),
-             self.entry_medecin.get(),
-             self.entry_inami_medecin.get(),
-             self.entry_pharmacien.get(),
-             self.entry_inami_pharmacien.get(),
-             self.entry_medicament_nom_commercial.get(),
-             self.entry_dci.get(),
-             date_prescription,
-             date_vente,
-             self.entry_duree_traitement.get()
-             ]
-        )
+        date_naissance = datetime.strftime(self.entry_date_naissance_patient.get_date(), "%Y-%m-%d")
+        form_data = [self.entry_niss_patient.get(),
+                     self.entry_nom_patient.get(),
+                     self.entry_prenom_patient.get(),
+                     date_naissance,
+                     self.entry_genre_patient.get(),
+                     self.entry_inami_medecin_patient.get(),
+                     self.entry_inami_pharmacien_patient.get(),
+                     self.entry_mail_patient.get(),
+                     self.entry_telephone_patient.get()
+                     ]
+
+        self.validate_data(form_data, "patient")
+
+        self.parent.handle_submitted_data(form_data, "patient")
+        self.destroy()
+
+    def submit_medecin(self):
+        form_data = [self.entry_prenom_patient.get(),
+                     self.entry_nom_medecin.get(),
+                     self.entry_specialite_medecin.get(),
+                     self.entry_telephone_medecin.get(),
+                     self.entry_mail_medecin.get()
+                     ]
+
+        self.validate_data(form_data, "medecin")
+
+        self.parent.handle_submitted_data(form_data, "medecin")
+        self.destroy()
+
+    def submit_pharmacien(self):
+        form_data = [self.entry_inami_pharmacien.get(),
+                     self.entry_nom_pharmacien.get(),
+                     self.entry_telephone_pharmacien.get(),
+                     self.entry_mail_pharmacien.get()
+                     ]
+
+        self.validate_data(form_data, "pharmacien")
+
+        self.parent.handle_submitted_data(form_data, "pharmacien")
         self.destroy()
 
 
+
+
 def reset_db():
+    print("DELETING DATABASE...")
     # Drop all tables
     mycursor.execute("DROP DATABASE IF EXISTS mydatabase")
     db.commit()
@@ -280,6 +356,7 @@ if __name__ == "__main__":
         auth_plugin='mysql_native_password'
     )
     mycursor = db.cursor()
+    reset_db()
     create_database(db)
 
     mycursor.execute("USE mydatabase")

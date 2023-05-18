@@ -23,6 +23,7 @@ def import_data(mydb, os_name):
     Importe les données des fichiers csv et xml dans la base de données
     :param mydb: mysql database connection
     """
+    print("IMPORTING DATA...")
     mycursor = mydb.cursor()
     mycursor.execute("USE mydatabase")
     OPERATING_SYSTEM = os_name
@@ -31,6 +32,8 @@ def import_data(mydb, os_name):
     import_xml_data(mycursor, OPERATING_SYSTEM)
     # Sauvegarder les modifications
     mydb.commit()
+    print("DONE.")
+    print("APPLICATION IS READY TO USE.")
 
 
 def import_csv_data(mycursor, os):

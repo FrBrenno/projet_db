@@ -92,8 +92,26 @@ def requete10(mycursor):
 def insert_patient(mycursor, data):
     res = "Insertion d'un patient\n\n"
     mycursor.execute(
-        "INSERT INTO dossiers_patients (NISS_patient, medecin, inami_medecin, pharmacien, inami_pharmacien, medicament_nom_commercial, DCI, date_prescription, date_vente, duree_traitement) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        "INSERT INTO patients (NISS, nom, prenom, date_de_naissance, genre, inami_medecin, inami_pharmacien, mail, telephone) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
         data)
+    for elem in data:
+        res += str(elem) + "\n"
+    return res
+
+
+def insert_medecin(mycursor, data):
+    res = "Insertion d'un medecin\n\n"
+    mycursor.execute(
+        "INSERT INTO medecins (inami, nom, specialite, telephone, mail) VALUES (%s, %s, %s, %s, %s)", data)
+    for elem in data:
+        res += str(elem) + "\n"
+    return res
+
+
+def insert_pharmacien(mycursor, data):
+    res = "Insertion d'un pharmacien\n\n"
+    mycursor.execute(
+        "INSERT INTO pharmaciens (inami, nom, telephone, mail) VALUES (%s, %s, %s, %s)", data)
     for elem in data:
         res += str(elem) + "\n"
     return res

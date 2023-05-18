@@ -1,4 +1,5 @@
 def create_database(mydb):
+    print("CREATING DATABASE")
     mycursor = mydb.cursor()
     mycursor.execute("CREATE DATABASE IF NOT EXISTS mydatabase")
     mycursor.execute("USE mydatabase")
@@ -20,6 +21,7 @@ def clear_data(mycursor):
 
 
 def create_tables(mycursor):
+    print("CREATING TABLES")
     mycursor.execute("CREATE TABLE IF NOT EXISTS dossiers_patients (NISS_patient BIGINT, medecin TEXT, inami_medecin "
                      "BIGINT, pharmacien TEXT, inami_pharmacien BIGINT, medicament_nom_commercial TEXT, DCI TEXT, "
                      "date_prescription DATE, date_vente DATE, duree_traitement INTEGER)")
