@@ -15,7 +15,7 @@ from requetes import *
 screen_width = 0
 screen_height = 0
 os_name = ""
-
+ 
 # get the screen resolution of the device
 if sys.platform.startswith('darwin'):
     print("Running on Mac")
@@ -98,43 +98,43 @@ class MainApplication(tk.Frame):
 
     def afficher_requete1(self):
         self.text.delete('1.0', tk.END)
-        self.text.insert(tk.END, requete1(mycursor))
+        self.text.insert(tk.END, run_requete(mycursor, 1))
 
     def afficher_requete2(self):
         self.text.delete('1.0', tk.END)
-        self.text.insert(tk.END, requete2(mycursor))
+        self.text.insert(tk.END, run_requete(mycursor, 2))
 
     def afficher_requete3(self):
         self.text.delete('1.0', tk.END)
-        self.text.insert(tk.END, requete3(mycursor))
+        self.text.insert(tk.END, run_requete(mycursor, 3))
 
     def afficher_requete4(self):
         self.text.delete('1.0', tk.END)
-        self.text.insert(tk.END, requete4(mycursor))
+        self.text.insert(tk.END, run_requete(mycursor, 4))
 
     def afficher_requete5(self):
         self.text.delete('1.0', tk.END)
-        self.text.insert(tk.END, requete5(mycursor))
+        self.text.insert(tk.END, run_requete(mycursor, 5))
 
     def afficher_requete6(self):
         self.text.delete('1.0', tk.END)
-        self.text.insert(tk.END, requete6(mycursor))
+        self.text.insert(tk.END, run_requete(mycursor, 6))
 
     def afficher_requete7(self):
         self.text.delete('1.0', tk.END)
-        self.text.insert(tk.END, requete7(mycursor))
+        self.text.insert(tk.END, run_requete(mycursor, 7))
 
     def afficher_requete8(self):
         self.text.delete('1.0', tk.END)
-        self.text.insert(tk.END, requete8(mycursor))
+        self.text.insert(tk.END, run_requete(mycursor, 8))
 
     def afficher_requete9(self):
         self.text.delete('1.0', tk.END)
-        self.text.insert(tk.END, requete9(mycursor))
+        self.text.insert(tk.END, run_requete(mycursor, 9))
 
     def afficher_requete10(self):
         self.text.delete('1.0', tk.END)
-        self.text.insert(tk.END, requete10(mycursor))
+        self.text.insert(tk.END, run_requete(mycursor, 10))
 
     def inscription_popup(self):
         popup_window = PopupWindow(self, "Inscription")
