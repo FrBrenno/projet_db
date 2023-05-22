@@ -1,7 +1,11 @@
 import datetime
+import sys
 
 def run_requete(mycursor, num, param = None):
-    filename = f"../requetes/requete_{num}.sql"
+    filename = f"requetes/requete_{num}.sql"
+    if sys.platform.startswith('win'):
+        filename = "../" + filename
+
     res = f"Requête {num} : \n\n"
 
     with open(filename) as f :
