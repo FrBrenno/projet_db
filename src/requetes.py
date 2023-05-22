@@ -1,13 +1,16 @@
 import datetime
 
 def run_requete(mycursor, num, param = None):
-    filename = f"requetes/requete_{num}.sql"
+    filename = f"../requetes/requete_{num}.sql"
     res = f"Requête {num} : \n\n"
 
     with open(filename) as f :
         query = " ".join(f.readlines())
-    
-    mycursor.execute(query)
+
+    if param != None :
+        mycursor.execute(query, (param,))
+    else :
+        mycursor.execute(query)
     print(query)
     print("OUAIS OUAIS")
     for x in mycursor:

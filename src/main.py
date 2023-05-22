@@ -97,9 +97,13 @@ class MainApplication(tk.Frame):
         self.parent.rowconfigure(1, weight=1)
 
     def afficher_requete1(self):
+        dci=self.text.get("1.0", tk.END).strip()
         self.text.delete('1.0', tk.END)
-        self.text.insert(tk.END, run_requete(mycursor, 1))
-
+        res = run_requete(mycursor, 1, dci).strip()
+        if res == "Requête 1 :":
+            self.text.insert(tk.END, "Aucun résultat, veuillez entrer un DCI valide")
+        else:
+            self.text.insert(tk.END, res)
     def afficher_requete2(self):
         self.text.delete('1.0', tk.END)
         self.text.insert(tk.END, run_requete(mycursor, 2))
@@ -397,11 +401,11 @@ if __name__ == "__main__":
         auth_plugin='mysql_native_password'
     )
     mycursor = db.cursor()
-    reset_db()
-    create_database(db)
+    #reset_db()
+    #create_database(db)
 
     mycursor.execute("USE mydatabase")
-    import_data(db, os_name)
+    #import_data(db, os_name)
 
     """ GUI SETUP """
     root = tk.Tk()
