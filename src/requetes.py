@@ -1,8 +1,9 @@
 import sys
+from CONSTANTS import dico_requêtes
 
 def run_requete(mycursor, num, param = None):
     filename = "../" + f"requetes/requete_{num}.sql" if sys.platform.startswith('win') else f"requetes/requete_{num}.sql"
-    res = f"Requête {num} : \n\n"
+    res = f"Requête {num} : " + dico_requêtes[num] + "\n\n"
 
     with open(filename) as f :
         query = " ".join(f.readlines())

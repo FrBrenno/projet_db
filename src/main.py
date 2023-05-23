@@ -32,7 +32,7 @@ class MainApplication(tk.Frame):
         self.parent.title("Projet DB")
 
         window_width = 510
-        window_height = 400
+        window_height = self.winfo_screenheight()
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         x = (screen_width // 2) - (window_width // 2)
