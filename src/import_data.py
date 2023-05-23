@@ -18,7 +18,7 @@ def convert_data_format(date_wrong_format):
 
 # insertion des données dans les tables
 
-def import_data(mydb, os_name):
+def import_data(mydb):
     """
     Importe les données des fichiers csv et xml dans la base de données
     :param mydb: mysql database connection
@@ -26,28 +26,23 @@ def import_data(mydb, os_name):
     print("IMPORTING DATA...")
     mycursor = mydb.cursor()
     mycursor.execute("USE mydatabase")
-    OPERATING_SYSTEM = os_name
 
-    import_csv_data(mycursor, OPERATING_SYSTEM)
-    import_xml_data(mycursor, OPERATING_SYSTEM)
+    import_csv_data(mycursor)
+    import_xml_data(mycursor)
     # Sauvegarder les modifications
     mydb.commit()
     print("DONE.")
     print("APPLICATION IS READY TO USE.")
 
 
-def import_csv_data(mycursor, os):
-    DOSSIER_PATIENT_CSV_PATH = "../" + DOSSIER_PATIENT_CSV if os == "Windows" else DOSSIER_PATIENT_CSV
-    MEDICAMENT_CSV_PATH = "../" + MEDICAMENT_CSV if os == "Windows" else MEDICAMENT_CSV
-    PHATOLOGIES_CSV_PATH = "../" + PHATOLOGIES_CSV if os == "Windows" else PHATOLOGIES_CSV
-
-    import_dossier_patient_csv(DOSSIER_PATIENT_CSV_PATH, mycursor)
-    import_medicament_csv(MEDICAMENT_CSV_PATH, mycursor)
-    import_phatologies_csv(PHATOLOGIES_CSV_PATH, mycursor)
+def import_csv_data(mycursor):
+    import_dossier_patient_csv(DOSSIER_PATIENT_CSV, mycursor)
+    import_medicament_csv(MEDICAMENT_CSV, mycursor)
+    import_phatologies_csv(PHATOLOGIES_CSV, mycursor)
 
 
-def import_phatologies_csv(PHATOLOGIES_CSV_PATH, mycursor):
-    with open(PHATOLOGIES_CSV_PATH, encoding='utf-8') as csvfile:
+def import_phatologies_csv(pathologiques_csv, mycursor):
+    with open(pathologiques_csv, encoding='utf-8') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',')
         for row in csvreader:
             if row[0] != "maladie":
@@ -60,8 +55,8 @@ def import_phatologies_csv(PHATOLOGIES_CSV_PATH, mycursor):
                         row)
 
 
-def import_medicament_csv(MEDICAMENT_CSV_PATH, mycursor):
-    with open(MEDICAMENT_CSV_PATH, encoding='utf-8') as csvfile:
+def import_medicament_csv(medicament_csv, mycursor):
+    with open(medicament_csv, encoding='utf-8') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',')
         for row in csvreader:
             if row[0] != "dci":
@@ -69,8 +64,8 @@ def import_medicament_csv(MEDICAMENT_CSV_PATH, mycursor):
                                  "VALUES (%s, %s, %s, %s)", row)
 
 
-def import_dossier_patient_csv(DOSSIER_PATIENT_CSV_PATH, mycursor):
-    with open(DOSSIER_PATIENT_CSV_PATH, encoding='utf-8') as csvfile:
+def import_dossier_patient_csv(dossier_patient_csv, mycursor):
+    with open(dossier_patient_csv, encoding='utf-8') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',')
         for row in csvreader:
             if row[0] != "NISS_patient":
@@ -84,22 +79,16 @@ def import_dossier_patient_csv(DOSSIER_PATIENT_CSV_PATH, mycursor):
                                  "duree_traitement) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", row)
 
 
-def import_xml_data(mycursor, os):
-    MEDECINS_XML_PATH = "../" + MEDECINS_XML if os == "Windows" else MEDECINS_XML
-    PATIENTS_XML_PATH = "../" + PATIENTS_XML if os == "Windows" else PATIENTS_XML
-    PHARMACIENS_XML_PATH = "../" + PHARMACIENS_XML if os == "Windows" else PHARMACIENS_XML
-    DIAGNOSTIQUES_XML_PATH = "../" + DIAGNOSTIQUES_XML if os == "Windows" else DIAGNOSTIQUES_XML
-    SPECIALITES_XML_PATH = "../" + SPECIALITES_XML if os == "Windows" else SPECIALITES_XML
-
-    import_medecin_xml(MEDECINS_XML_PATH, mycursor)
-    import_patient_xml(PATIENTS_XML_PATH, mycursor)
-    import_pharmacien_xml(PHARMACIENS_XML_PATH, mycursor)
-    import_diagnostique_xml(DIAGNOSTIQUES_XML_PATH, mycursor)
-    import_specialite_xml(SPECIALITES_XML_PATH, mycursor)
+def import_xml_data(mycursor):
+    import_medecin_xml(MEDECINS_XML, mycursor)
+    import_patient_xml(PATIENTS_XML, mycursor)
+    import_pharmacien_xml(PHARMACIENS_XML, mycursor)
+    import_diagnostique_xml(DIAGNOSTIQUES_XML, mycursor)
+    import_specialite_xml(SPECIALITES_XML, mycursor)
 
 
-def import_specialite_xml(SPECIALITES_XML_PATH, mycursor):
-    tree = ElemTree.parse(SPECIALITES_XML_PATH)
+def import_specialite_xml(specialite_xml, mycursor):
+    tree = ElemTree.parse(specialite_xml)
     root = tree.getroot()
     for specialite in root.findall('specialite'):
         nom = specialite.find('name').text
@@ -109,8 +98,8 @@ def import_specialite_xml(SPECIALITES_XML_PATH, mycursor):
                              (nom, systeme_anat))
 
 
-def import_diagnostique_xml(DIAGNOSTIQUES_XML_PATH, mycursor):
-    tree = ElemTree.parse(DIAGNOSTIQUES_XML_PATH)
+def import_diagnostique_xml(diagnostique_xml, mycursor):
+    tree = ElemTree.parse(diagnostique_xml)
     root = tree.getroot()
     for diagnostic in root.findall('diagnostique'):
         NISS = diagnostic.find('NISS').text
@@ -132,8 +121,8 @@ def import_diagnostique_xml(DIAGNOSTIQUES_XML_PATH, mycursor):
             (NISS, date_diagnostic, naissance, pathology, specialite))
 
 
-def import_pharmacien_xml(PHARMACIENS_XML_PATH, mycursor):
-    tree = ElemTree.parse(PHARMACIENS_XML_PATH)
+def import_pharmacien_xml(pharmaciens_xml, mycursor):
+    tree = ElemTree.parse(pharmaciens_xml)
     root = tree.getroot()
     for pharmacien in root.findall('pharmacien'):
         inami = pharmacien.find('inami').text
@@ -144,8 +133,8 @@ def import_pharmacien_xml(PHARMACIENS_XML_PATH, mycursor):
                          (inami, nom, mail, telephone))
 
 
-def import_patient_xml(PATIENTS_XML_PATH, mycursor):
-    tree = ElemTree.parse(PATIENTS_XML_PATH)
+def import_patient_xml(patients_xml, mycursor):
+    tree = ElemTree.parse(patients_xml)
     root = tree.getroot()
     for patient in root.findall('patient'):
         NISS = patient.find('NISS').text
@@ -165,8 +154,8 @@ def import_patient_xml(PATIENTS_XML_PATH, mycursor):
             (NISS, nom, prenom, date_de_naissance, genre, inami_medecin, inami_pharmacien, mail, telephone))
 
 
-def import_medecin_xml(MEDECINS_XML_PATH, mycursor):
-    tree = ElemTree.parse(MEDECINS_XML_PATH)
+def import_medecin_xml(medecins_xml, mycursor):
+    tree = ElemTree.parse(medecins_xml)
     root = tree.getroot()
     for medecin in root.findall('medecin'):
         inami = medecin.find('inami').text

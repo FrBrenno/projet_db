@@ -204,7 +204,6 @@ class MainApplication(tk.Frame):
         submit_button = tk.Button(popup, text="Afficher la requête", command=submit)
         submit_button.pack()
 
-
     def inscription_popup(self):
         popup_window = PopupWindow(self, "Inscription")
         popup_window.update()
@@ -223,7 +222,6 @@ class MainApplication(tk.Frame):
         elif type == "pharmacien":
             self.text.insert(tk.END, insert_pharmacien(mycursor, data))
         db.commit()
-
 
 class PopupWindow(tk.Toplevel):
     def __init__(self, parent, title):
@@ -466,11 +464,11 @@ if __name__ == "__main__":
         auth_plugin='mysql_native_password'
     )
     mycursor = db.cursor()
-    #reset_db()
-    #create_database(db)
+    reset_db()
+    create_database(db)
 
     mycursor.execute("USE mydatabase")
-    #import_data(db, os_name)
+    import_data(db)
 
     """ GUI SETUP """
     root = tk.Tk()

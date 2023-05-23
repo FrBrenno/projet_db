@@ -1,3 +1,4 @@
+import sys
 DOSSIER_PATIENT_CSV = "data/dossiers_patients.csv"
 MEDICAMENT_CSV = "data/medicaments.csv"
 PHATOLOGIES_CSV = "data/pathologies.csv"
@@ -6,6 +7,18 @@ PATIENTS_XML = 'data/patients.xml'
 PHARMACIENS_XML = 'data/pharmaciens.xml'
 DIAGNOSTIQUES_XML = 'data/diagnostiques.xml'
 SPECIALITES_XML = 'data/specialites.xml'
+
+if sys.platform.startswith('win'):
+    """Running on windows"""
+    DOSSIER_PATIENT_CSV = "../" + DOSSIER_PATIENT_CSV
+    MEDICAMENT_CSV = "../" + MEDICAMENT_CSV
+    PHATOLOGIES_CSV = "../" + PHATOLOGIES_CSV
+    MEDECINS_XML = "../" + MEDECINS_XML
+    PATIENTS_XML = "../" + PATIENTS_XML
+    PHARMACIENS_XML = "../" + PHARMACIENS_XML
+    DIAGNOSTIQUES_XML = "../" + DIAGNOSTIQUES_XML
+    SPECIALITES_XML = "../" + SPECIALITES_XML
+
 
 dico_requêtes = {1: "La liste des noms commerciaux de médicaments correspondant à un nom en DCI, classés par ordre alphabétique et taille de conditionnement",
                  2: "La liste des pathologies qui peuvent être prise en charge par un seul type de spécialistes.",
