@@ -6,4 +6,3 @@ PATIENTS_XML = 'data/patients.xml'
 PHARMACIENS_XML = 'data/pharmaciens.xml'
 DIAGNOSTIQUES_XML = 'data/diagnostiques.xml'
 SPECIALITES_XML = 'data/specialites.xml'
-

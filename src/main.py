@@ -1,5 +1,3 @@
-import ctypes
-import sys
 import tkinter as tk
 from datetime import datetime
 from tkinter import ttk
@@ -11,6 +9,18 @@ from tkcalendar import DateEntry
 from create_database import create_database
 from import_data import import_data
 from requetes import *
+
+def afficher_popup(window_size): 
+    popup = tk.Toplevel(root)
+    popup_width, popup_height = window_size
+    screen_width = popup.winfo_screenwidth()
+    screen_height = popup.winfo_screenheight()
+    x = (screen_width // 2) - (popup_width // 2)
+    y = (screen_height // 2) - (popup_height // 2)
+    popup.geometry(f"{popup_width}x{popup_height}+{x}+{y}")
+    popup.title("Entrez les paramètres de la requête")
+
+    return popup
 
 class MainApplication(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
@@ -27,7 +37,6 @@ class MainApplication(tk.Frame):
         screen_height = self.winfo_screenheight()
         x = (screen_width // 2) - (window_width // 2)
         y = (screen_height // 2) - (window_height // 2)  
-        # set the geometry of the window to position it in the center
         root.geometry(f"{window_width}x{window_height}+{x}+{y}")
 
         self.inscription = tk.Button(self.parent, text="Inscription", command=self.inscription_popup)
@@ -75,12 +84,10 @@ class MainApplication(tk.Frame):
         self.parent.rowconfigure(1, weight=1)
 
     def afficher_requete1(self):
-        popup = tk.Toplevel(root)
         def submit():
-            value = entry.get()  # Get the value from the entry widget
-            if value:
-                popup.destroy()  # Close the popup window
-                dci=value
+            dci = entry.get()
+            if dci:
+                popup.destroy()
                 self.text.delete('1.0', tk.END)
                 res = run_requete(mycursor, 1, dci).strip()
                 if res == "Requête 1 :":
@@ -88,22 +95,16 @@ class MainApplication(tk.Frame):
                 else:
                     self.text.insert(tk.END, res)
 
-        popup.title("Entrez un DCI")
-        
-        popup_width = 200
-        popup_height = 100
-        screen_width = popup.winfo_screenwidth()
-        screen_height = popup.winfo_screenheight()
-        x = (screen_width // 2) - (popup_width // 2)
-        y = (screen_height // 2) - (popup_height // 2)
-        popup.geometry(f"{popup_width}x{popup_height}+{x}+{y}")
+        popup = afficher_popup((200,100))
+        # Label
+        tk.Label(popup, text="Entrez le DCI :").pack()
         entry = tk.Entry(popup)
+        entry.insert(0, "IBUPROFENE")
         entry.pack(pady=10)
+        # Submit button
         submit_button = tk.Button(popup, text="Afficher la requête", command=submit)
         submit_button.pack()
-
-
-            
+       
     def afficher_requete2(self):
         self.text.delete('1.0', tk.END)
         self.text.insert(tk.END, run_requete(mycursor, 2))
@@ -113,18 +114,62 @@ class MainApplication(tk.Frame):
         self.text.insert(tk.END, run_requete(mycursor, 3))
 
     def afficher_requete4(self):
-        self.text.delete('1.0', tk.END)
-        self.text.insert(tk.END, run_requete(mycursor, 4))
+        def submit():
+            nom_medicament = entry.get() 
+            date = date_entry.get()
+
+            if nom_medicament and date:
+                popup.destroy()  
+                self.text.delete('1.0', tk.END)
+                res = run_requete(mycursor, 4, [date, nom_medicament]).strip()
+                if res == "Requête 4 :":
+                    self.text.insert(tk.END, "Aucun résultat, veuillez entrer des données valide")
+                else:
+                    self.text.insert(tk.END, res)
+        
+        popup = afficher_popup((400,350))
+        # Labels
+        tk.Label(popup, text="Entrez le nom du médicament :").pack()
+        tk.Label(popup, text="Entrez la date :").pack()
+        entry = tk.Entry(popup)
+        date_entry = tk.Entry(popup)
+        entry.pack(pady=10)
+        date_entry.pack(pady=10)
+        entry.insert(0, "Doliprane")
+        date_entry.insert(0, "2001-07-30")
+        # Submit button
+        submit_button = tk.Button(popup, text="Afficher la requête", command=submit) 
+        submit_button.pack()
 
     def afficher_requete5(self):
-        self.text.delete('1.0', tk.END)
-        self.text.insert(tk.END, run_requete(mycursor, 5))
+        """check si correct"""
+        def submit():
+            dci = entry.get()
+            if dci:
+                popup.destroy()
+                self.text.delete('1.0', tk.END)
+                res = run_requete(mycursor, 5, dci).strip()
+                if res == "Requête 5 :":
+                    self.text.insert(tk.END, "Aucun résultat, veuillez entrer un DCI valide")
+                else:
+                    self.text.insert(tk.END, res)
+        
+        popup = afficher_popup((200,100))
+        # Label
+        tk.Label(popup, text="Entrez le DCI :").pack()
+        entry = tk.Entry(popup)
+        entry.insert(0, "MONTELUKAST")
+        entry.pack(pady=10)
+        # Submit button
+        submit_button = tk.Button(popup, text="Afficher la requête", command=submit)
+        submit_button.pack()
 
     def afficher_requete6(self):
         self.text.delete('1.0', tk.END)
         self.text.insert(tk.END, run_requete(mycursor, 6))
 
     def afficher_requete7(self):
+        """Que des noms en "T" je sais pas si c'est normal"""
         self.text.delete('1.0', tk.END)
         self.text.insert(tk.END, run_requete(mycursor, 7))
 
@@ -133,12 +178,32 @@ class MainApplication(tk.Frame):
         self.text.insert(tk.END, run_requete(mycursor, 8))
 
     def afficher_requete9(self):
+        #TODO écrire requête
         self.text.delete('1.0', tk.END)
         self.text.insert(tk.END, run_requete(mycursor, 9))
 
     def afficher_requete10(self):
-        self.text.delete('1.0', tk.END)
-        self.text.insert(tk.END, run_requete(mycursor, 10))
+        def submit():
+            dci = entry.get()
+            if dci:
+                popup.destroy()
+                self.text.delete('1.0', tk.END)
+                res = run_requete(mycursor, 10, dci).strip()
+                if res == "Requête 10 :":
+                    self.text.insert(tk.END, "Aucun résultat, veuillez entrer une date valide")
+                else:
+                    self.text.insert(tk.END, res)
+        
+        popup = afficher_popup((200,100))
+        # Label
+        tk.Label(popup, text="Entrez la date :").pack()
+        entry = tk.Entry(popup)
+        entry.insert(0, "2001-07-30")
+        entry.pack(pady=10)
+        # Submit button
+        submit_button = tk.Button(popup, text="Afficher la requête", command=submit)
+        submit_button.pack()
+
 
     def inscription_popup(self):
         popup_window = PopupWindow(self, "Inscription")
