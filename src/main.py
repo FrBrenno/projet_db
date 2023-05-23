@@ -12,33 +12,6 @@ from create_database import create_database
 from import_data import import_data
 from requetes import *
 
-screen_width = 0
-screen_height = 0
-os_name = ""
- 
-# get the screen resolution of the device
-if sys.platform.startswith('darwin'):
-    print("Running on Mac")
-    os_name = "Mac"
-    screen_width = 2560
-    screen_height = 1600
-elif sys.platform.startswith('win'):
-    print("Running on Windows")
-    os_name = "Windows"
-    usr32 = ctypes.windll.user32
-    # get the screen resolution of the device
-    screen_width = usr32.GetSystemMetrics(0)
-    screen_height = usr32.GetSystemMetrics(1)
-
-# set the dimensions of the window
-window_width = 510
-window_height = 400
-
-# calculate the x and y coordinates of the window
-x = int((screen_width - window_width) / 2)
-y = int((screen_height - window_height) / 2)
-
-
 class MainApplication(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
@@ -46,9 +19,14 @@ class MainApplication(tk.Frame):
 
         self.style = ttk.Style(self.parent)
         self.style.theme_use("clam")
-
         self.parent.title("Projet DB")
 
+        window_width = 510
+        window_height = 400
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        x = (screen_width // 2) - (window_width // 2)
+        y = (screen_height // 2) - (window_height // 2)  
         # set the geometry of the window to position it in the center
         root.geometry(f"{window_width}x{window_height}+{x}+{y}")
 
@@ -97,13 +75,35 @@ class MainApplication(tk.Frame):
         self.parent.rowconfigure(1, weight=1)
 
     def afficher_requete1(self):
-        dci=self.text.get("1.0", tk.END).strip()
-        self.text.delete('1.0', tk.END)
-        res = run_requete(mycursor, 1, dci).strip()
-        if res == "Requête 1 :":
-            self.text.insert(tk.END, "Aucun résultat, veuillez entrer un DCI valide")
-        else:
-            self.text.insert(tk.END, res)
+        popup = tk.Toplevel(root)
+        def submit():
+            value = entry.get()  # Get the value from the entry widget
+            if value:
+                popup.destroy()  # Close the popup window
+                dci=value
+                self.text.delete('1.0', tk.END)
+                res = run_requete(mycursor, 1, dci).strip()
+                if res == "Requête 1 :":
+                    self.text.insert(tk.END, "Aucun résultat, veuillez entrer un DCI valide")
+                else:
+                    self.text.insert(tk.END, res)
+
+        popup.title("Entrez un DCI")
+        
+        popup_width = 200
+        popup_height = 100
+        screen_width = popup.winfo_screenwidth()
+        screen_height = popup.winfo_screenheight()
+        x = (screen_width // 2) - (popup_width // 2)
+        y = (screen_height // 2) - (popup_height // 2)
+        popup.geometry(f"{popup_width}x{popup_height}+{x}+{y}")
+        entry = tk.Entry(popup)
+        entry.pack(pady=10)
+        submit_button = tk.Button(popup, text="Afficher la requête", command=submit)
+        submit_button.pack()
+
+
+            
     def afficher_requete2(self):
         self.text.delete('1.0', tk.END)
         self.text.insert(tk.END, run_requete(mycursor, 2))
