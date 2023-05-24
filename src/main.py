@@ -290,7 +290,7 @@ class MainApplication(tk.Frame):
                 zone_text.insert(tk.END, traitements)
 
         def changer_medecin(niss_patient):
-            popup_changement_medecin = afficher_popup((200,200))
+            popup_changement_medecin = afficher_popup((250,200))
             popup_changement_medecin.title("Changer de medecin")
             tk.Label(popup_changement_medecin, text="Entrez le nouveau inami du medecin :").pack()
             entry_inami_medecin = tk.Entry(popup_changement_medecin)
@@ -311,7 +311,7 @@ class MainApplication(tk.Frame):
                     tk.Label(popup_error, text="INAMI incorrect").pack()
 
         def changer_pharmacien(niss_patient):
-            popup_changement_pharmacien = afficher_popup((200, 200))
+            popup_changement_pharmacien = afficher_popup((250, 200))
             popup_changement_pharmacien.title("Changer de pharmacien")
             tk.Label(popup_changement_pharmacien, text="Entrez le nouveau inami du pharmacien :").pack()
             entry_inami_pharmacien = tk.Entry(popup_changement_pharmacien)
