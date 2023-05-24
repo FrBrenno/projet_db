@@ -22,6 +22,9 @@ def afficher_popup(window_size):
 
     return popup
 
+
+
+
 class MainApplication(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
@@ -218,7 +221,102 @@ class MainApplication(tk.Frame):
         popup_window.geometry(f"{width}x{height}+{x}+{y}")
 
     def connexion(self):
-        afficher_popup((400,400))
+        def check_NISS():
+            niss = entry.get()
+            for i in niss:
+                if not i.isdigit():
+                    return False
+
+            if requet_check_NISS(mycursor, niss):
+                affiche_menu_patient(niss)
+
+            else:
+                """TODO popup erreur"""
+                popup_error = afficher_popup((200,100))
+                tk.Label(popup_error, text="NISS incorrect").pack()
+
+        def affiche_menu_patient(niss):
+            #enleve les bouton et le text
+            niss_text.destroy()
+            entry.destroy()
+            submit_button.destroy()
+            #affiche les info du patient: niss, nom, prenom, date de naissance, genre, inami du medecin, inami du pharmacien, mail et telephone
+            info_patient = requet_info_patient(mycursor, niss)
+            tk.Label(popup_general, text="NISS : " + str(info_patient[0])).grid(row=0, column=0)
+            tk.Button(popup_general, text="Rafraichir", command=lambda: affiche_menu_patient(niss)).grid(row=0, column=1)
+
+            tk.Label(popup_general, text="Nom : " + info_patient[1]).grid(row=1, column=0)
+            tk.Label(popup_general, text="Prenom : " + info_patient[2]).grid(row=2, column=0)
+            tk.Label(popup_general, text="Date de naissance : " + str(info_patient[3])).grid(row=3, column=0)
+            tk.Label(popup_general, text="Genre : " + str(info_patient[4])).grid(row=4, column=0)
+
+            tk.Label(popup_general, text="Inami du medecin : " + str(info_patient[5])).grid(row=5, column=0)
+            tk.Button(popup_general, text="changer de medecin", command=lambda: changer_medecin(niss)).grid(row=5, column=1)
+
+            tk.Label(popup_general, text="Inami du pharmacien : " + str(info_patient[6])).grid(row=6, column=0, padx=10)
+            tk.Button(popup_general, text="changer de pharmacien", command=lambda:changer_pharmacien(niss)).grid(row=6, column=1)
+
+            if info_patient[7] == None:
+                info_patient[7] = "Pas de mail"
+            tk.Label(popup_general, text="Mail : " + info_patient[7]).grid(row=7, column=0)
+
+            if info_patient[8] == None:
+                info_patient[8] = "Pas de telephone"
+            tk.Label(popup_general, text="Telephone : " + str(info_patient[8])).grid(row=8, column=0)
+
+        def changer_medecin(niss_patient):
+            popup_changement_medecin = afficher_popup((200,200))
+            popup_changement_medecin.title("Changer de medecin")
+            tk.Label(popup_changement_medecin, text="Entrez le nouveau inami du medecin :").pack()
+            entry_inami_medecin = tk.Entry(popup_changement_medecin)
+            entry_inami_medecin.pack(pady=10)
+
+            button_changer = tk.Button(popup_changement_medecin, text="Changer", command=lambda: envoie_requet_changer_medecin(mycursor, niss_patient, entry_inami_medecin.get()) and popup_changement_medecin.destroy())
+            button_changer.pack()
+
+
+            def envoie_requet_changer_medecin(mycursor, niss_patient, inami_medecin):
+                #espcace de texte modifiable pour afficher les erreurs
+
+                if requet_check_inami_medecin(mycursor, inami_medecin):
+                    requet_changer_medecin(mycursor, niss_patient, inami_medecin)
+                    db.commit()
+                    return True
+                else:
+                    popup_error = afficher_popup((200, 100))
+                    tk.Label(popup_error, text="INAMI incorrect").pack()
+
+        def changer_pharmacien(niss_patient):
+            popup_changement_pharmacien = afficher_popup((200, 200))
+            popup_changement_pharmacien.title("Changer de pharmacien")
+            tk.Label(popup_changement_pharmacien, text="Entrez le nouveau inami du pharmacien :").pack()
+            entry_inami_pharmacien = tk.Entry(popup_changement_pharmacien)
+            entry_inami_pharmacien.pack(pady=10)
+
+            button_changer = tk.Button(popup_changement_pharmacien, text="Changer", command=lambda: envoie_requet_changer_pharmacien(mycursor,niss_patient, entry_inami_pharmacien.get()) and popup_changement_pharmacien.destroy())
+            button_changer.pack()
+
+            def envoie_requet_changer_pharmacien(mycursor, niss_patient, inami_pharmacien):
+                # espcace de texte modifiable pour afficher les erreurs
+
+                if requet_check_inami_pharmacien(mycursor, inami_pharmacien):
+                    requete_changer_pharmacien(mycursor, niss_patient, inami_pharmacien)
+                    db.commit()
+                    return True
+                else:
+                    popup_error = afficher_popup((200, 100))
+                    tk.Label(popup_error, text="INAMI incorrect").pack()
+
+
+        popup_general = afficher_popup((400,400))
+        niss_text = tk.Label(popup_general, text="Entrez votre NISS de patient :")
+        niss_text.pack()
+        entry = tk.Entry(popup_general)
+        entry.pack(pady=10)
+        submit_button = tk.Button(popup_general, text="Se connecter", command=check_NISS)
+        submit_button.pack()
+
+
 
     def handle_submitted_data(self, data, type):
         self.text.delete('1.0', tk.END)
