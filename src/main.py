@@ -31,16 +31,20 @@ class MainApplication(tk.Frame):
         self.style.theme_use("clam")
         self.parent.title("Projet DB")
 
-        window_width = 510
-        window_height = self.winfo_screenheight()
+        window_width = self.winfo_screenwidth()//2
+        window_height = self.winfo_screenheight()//2
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         x = (screen_width // 2) - (window_width // 2)
-        y = (screen_height // 2) - (window_height // 2)  
+        y = (screen_height // 2) - (window_height // 2)
         root.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
 
         self.inscription = tk.Button(self.parent, text="Inscription", command=self.inscription_popup)
         self.inscription.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+
+        self.connexion = tk.Button(self.parent, text="connexion", command=self.connexion)
+        self.connexion.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
         self.text = tk.Text(self.parent, height=40)
         self.text.grid(row=1, column=0, padx=10, pady=10, sticky="nsew", columnspan=5)
@@ -104,7 +108,7 @@ class MainApplication(tk.Frame):
         # Submit button
         submit_button = tk.Button(popup, text="Afficher la requête", command=submit)
         submit_button.pack()
-       
+
     def afficher_requete2(self):
         self.text.delete('1.0', tk.END)
         self.text.insert(tk.END, run_requete(mycursor, 2))
@@ -115,18 +119,18 @@ class MainApplication(tk.Frame):
 
     def afficher_requete4(self):
         def submit():
-            nom_medicament = entry.get() 
+            nom_medicament = entry.get()
             date = date_entry.get()
 
             if nom_medicament and date:
-                popup.destroy()  
+                popup.destroy()
                 self.text.delete('1.0', tk.END)
                 res = run_requete(mycursor, 4, [date, nom_medicament]).strip()
                 if res == "Requête 4 :":
                     self.text.insert(tk.END, "Aucun résultat, veuillez entrer des données valide")
                 else:
                     self.text.insert(tk.END, res)
-        
+
         popup = afficher_popup((400,350))
         # Labels
         tk.Label(popup, text="Entrez le nom du médicament :").pack()
@@ -138,7 +142,7 @@ class MainApplication(tk.Frame):
         entry.insert(0, "Doliprane")
         date_entry.insert(0, "2001-07-30")
         # Submit button
-        submit_button = tk.Button(popup, text="Afficher la requête", command=submit) 
+        submit_button = tk.Button(popup, text="Afficher la requête", command=submit)
         submit_button.pack()
 
     def afficher_requete5(self):
@@ -153,7 +157,7 @@ class MainApplication(tk.Frame):
                     self.text.insert(tk.END, "Aucun résultat, veuillez entrer un DCI valide")
                 else:
                     self.text.insert(tk.END, res)
-        
+
         popup = afficher_popup((200,100))
         # Label
         tk.Label(popup, text="Entrez le DCI :").pack()
@@ -193,7 +197,7 @@ class MainApplication(tk.Frame):
                     self.text.insert(tk.END, "Aucun résultat, veuillez entrer une date valide")
                 else:
                     self.text.insert(tk.END, res)
-        
+
         popup = afficher_popup((200,100))
         # Label
         tk.Label(popup, text="Entrez la date :").pack()
@@ -212,6 +216,9 @@ class MainApplication(tk.Frame):
         x = (self.winfo_screenwidth() - width) // 2
         y = (self.winfo_screenheight() - height) // 2
         popup_window.geometry(f"{width}x{height}+{x}+{y}")
+
+    def connexion(self):
+        afficher_popup((400,400))
 
     def handle_submitted_data(self, data, type):
         self.text.delete('1.0', tk.END)
@@ -464,11 +471,11 @@ if __name__ == "__main__":
         auth_plugin='mysql_native_password'
     )
     mycursor = db.cursor()
-    reset_db()
-    create_database(db)
+    #reset_db()
+    #create_database(db)
 
     mycursor.execute("USE mydatabase")
-    import_data(db)
+    #import_data(db)
 
     """ GUI SETUP """
     root = tk.Tk()
