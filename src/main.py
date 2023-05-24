@@ -46,7 +46,7 @@ class MainApplication(tk.Frame):
         self.inscription = tk.Button(self.parent, text="Inscription", command=self.inscription_popup)
         self.inscription.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
-        self.connexion = tk.Button(self.parent, text="connexion", command=self.connexion)
+        self.connexion = tk.Button(self.parent, text="profil", command=self.profil_popup)
         self.connexion.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
 
         self.text = tk.Text(self.parent, height=40)
@@ -220,7 +220,7 @@ class MainApplication(tk.Frame):
         y = (self.winfo_screenheight() - height) // 2
         popup_window.geometry(f"{width}x{height}+{x}+{y}")
 
-    def connexion(self):
+    def profil_popup(self):
         def check_NISS():
             niss = entry.get()
             for i in niss:
@@ -241,7 +241,10 @@ class MainApplication(tk.Frame):
             entry.destroy()
             submit_button.destroy()
             #affiche les info du patient: niss, nom, prenom, date de naissance, genre, inami du medecin, inami du pharmacien, mail et telephone
-            info_patient = requet_info_patient(mycursor, niss)
+            # et rajoute 3 boutons: rafrachir, modifier le medecin et modifier le pharmacien
+
+            info_patient = requet_info_patient(mycursor, niss) #récupère les infos du patient
+
             tk.Label(popup_general, text="NISS : " + str(info_patient[0])).grid(row=0, column=0)
             tk.Button(popup_general, text="Rafraichir", command=lambda: affiche_menu_patient(niss)).grid(row=0, column=1)
 
@@ -251,7 +254,7 @@ class MainApplication(tk.Frame):
             tk.Label(popup_general, text="Genre : " + str(info_patient[4])).grid(row=4, column=0)
 
             tk.Label(popup_general, text="Inami du medecin : " + str(info_patient[5])).grid(row=5, column=0)
-            tk.Button(popup_general, text="changer de medecin", command=lambda: changer_medecin(niss)).grid(row=5, column=1)
+            tk.Button(popup_general, text="changer de medecin", command=lambda: changer_medecin(niss)).grid(row=5, column=1, pady=5)
 
             tk.Label(popup_general, text="Inami du pharmacien : " + str(info_patient[6])).grid(row=6, column=0, padx=10)
             tk.Button(popup_general, text="changer de pharmacien", command=lambda:changer_pharmacien(niss)).grid(row=6, column=1)
@@ -262,7 +265,29 @@ class MainApplication(tk.Frame):
 
             if info_patient[8] == None:
                 info_patient[8] = "Pas de telephone"
-            tk.Label(popup_general, text="Telephone : " + str(info_patient[8])).grid(row=8, column=0)
+            tk.Label(popup_general, text="Telephone : " + str(info_patient[8])).grid(row=8, column=0, pady=10)
+
+            # 2 boutons pour évoir ses informations médicale et voir ses traitements
+            tk.Button(popup_general, text="Voir ses informations médicale", command=lambda: voir_info_medical(niss)).grid(row=9, column=0)
+            tk.Button(popup_general, text="Voir ses traitements", command=lambda: voir_traitements(niss)).grid(row=9, column=1)
+
+            # 1 zone de texte pour afficher les informations médicale et les traitements en dessous de la grid
+            zone_text = tk.Text(popup_general, width=300, height=50)
+            zone_text.place(x=0, y=300)
+
+            def voir_info_medical(niss_patient):
+                info_medical = requet_voir_info_medical(mycursor, niss_patient)
+                zone_text.delete('1.0', tk.END)
+                zone_text.insert(tk.END, "Informations médicale : \n")
+                zone_text.insert(tk.END, "date de diagnostique, pathologie, specialité \n")
+                zone_text.insert(tk.END, info_medical)
+
+            def voir_traitements(niss_patient):
+                traitements = requet_voir_traitements(mycursor, niss_patient)
+                zone_text.delete('1.0', tk.END)
+                zone_text.insert(tk.END, "Traitements : \n")
+                zone_text.insert(tk.END, "medecin, inami medecin, pharmacien, inami pharmacien, nom commercial du medicament, DCI, date de préscription, date de vente, durée traitement \n")
+                zone_text.insert(tk.END, traitements)
 
         def changer_medecin(niss_patient):
             popup_changement_medecin = afficher_popup((200,200))
@@ -276,7 +301,6 @@ class MainApplication(tk.Frame):
 
 
             def envoie_requet_changer_medecin(mycursor, niss_patient, inami_medecin):
-                #espcace de texte modifiable pour afficher les erreurs
 
                 if requet_check_inami_medecin(mycursor, inami_medecin):
                     requet_changer_medecin(mycursor, niss_patient, inami_medecin)
@@ -308,7 +332,10 @@ class MainApplication(tk.Frame):
                     tk.Label(popup_error, text="INAMI incorrect").pack()
 
 
-        popup_general = afficher_popup((400,400))
+
+
+
+        popup_general = afficher_popup((700,700))
         niss_text = tk.Label(popup_general, text="Entrez votre NISS de patient :")
         niss_text.pack()
         entry = tk.Entry(popup_general)

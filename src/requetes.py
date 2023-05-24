@@ -1,3 +1,4 @@
+import datetime
 import sys
 from CONSTANTS import dico_requêtes
 
@@ -93,3 +94,24 @@ def requet_changer_medecin(mycursor, NISS, inami_medecin):
 def requete_changer_pharmacien(mycursor, NISS, inami_pharmacien):
     mycursor.execute("UPDATE patients SET inami_pharmacien = %s WHERE NISS = %s", (inami_pharmacien, NISS))
     return True
+
+
+def requet_voir_info_medical(mycursor, NISS):
+    mycursor.execute("SELECT date_diagnostic, pathology, specialite FROM diagnostiques WHERE NISS = %s", (NISS,))
+    res = []
+    for x in mycursor:
+        x = list(x)
+        x[0] = x[0].strftime("%d/%m/%Y")
+        res.append(str(x) + "\n")
+    print(res)
+    return res
+
+def requet_voir_traitements(mycursor, NISS):
+    mycursor.execute("SELECT medecin, inami_medecin, pharmacien, inami_pharmacien, medicament_nom_commercial, DCI, date_prescription, date_vente, duree_traitement FROM dossiers_patients WHERE NISS_patient = %s", (NISS,))
+    res = []
+    for x in mycursor:
+        x = list(x)
+        x[6] = x[6].strftime("%d/%m/%Y")
+        x[7] = x[7].strftime("%d/%m/%Y")
+        res.append(str(x) + "\n")
+    return res
