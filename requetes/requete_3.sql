@@ -1,6 +1,6 @@
-SELECT medecins.specialite,
+SELECT m.specialite,
 COUNT(*) AS occurences
-FROM dossiers_patients JOIN medecins
-WHERE dossiers_patients.inami_medecin = medecins.inami
-GROUP BY medecins.specialite
+FROM dossiers_patients dp, medecins m
+WHERE dp.inami_medecin = m.inami
+GROUP BY m.specialite
 ORDER BY occurences DESC LIMIT 100
