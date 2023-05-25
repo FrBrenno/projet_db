@@ -1,4 +1,4 @@
-SELECT DCI
+SELECT DISTINCT DCI
 FROM mydatabase.dossiers_patients dp1
 WHERE NOT EXISTS (
     SELECT 1
