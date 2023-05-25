@@ -1,9 +1,10 @@
 import datetime
 import sys
-from CONSTANTS import dico_requêtes
+from CONSTANTS import dico_requêtes, dico_fichiers_requete
 
 def run_requete(mycursor, num, param = None):
-    filename = "../" + f"requetes/requete_{num}.sql" if sys.platform.startswith('win') else f"requetes/requete_{num}.sql"
+    filename = dico_fichiers_requete[num]
+    filename = "../" + filename if sys.platform.startswith('win') else filename
     res = f"Requête {num} : " + dico_requêtes[num] + "\n\n"
 
     with open(filename) as f :

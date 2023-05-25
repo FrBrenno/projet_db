@@ -30,3 +30,7 @@ dico_requêtes = {1: "La liste des noms commerciaux de médicaments correspondan
                  8 : "Quelle est la pathologie la plus diagnostiquée ?",
                  9 : "Pour chaque patient, le nombre de médecin lui ayant prescrit un médicament.",
                  10 : "La liste de médicament n’étant plus prescrit depuis une date spécifique."}
+
+dico_fichiers_requete = {key: f"sql/requete_{key}.sql" for key in range(1, 11)}
+
+FICHIER_DDL = "sql/DDL.sql"
