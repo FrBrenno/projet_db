@@ -149,6 +149,8 @@ def import_patient_xml(patients_xml, mycursor):
         inami_pharmacien = patient.find('inami_pharmacien').text
         mail = patient.find('mail').text
         telephone = patient.find('telephone').text
+        if telephone == "None":
+            telephone = None
         mycursor.execute(
             "INSERT INTO patients (NISS, nom, prenom, date_de_naissance, genre, inami_medecin, inami_pharmacien, mail, telephone) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
             (NISS, nom, prenom, date_de_naissance, genre, inami_medecin, inami_pharmacien, mail, telephone))
