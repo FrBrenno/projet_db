@@ -34,3 +34,6 @@ dico_requêtes = {1: "La liste des noms commerciaux de médicaments correspondan
 dico_fichiers_requete = {key: f"sql/requete_{key}.sql" for key in range(1, 11)}
 
 FICHIER_DDL = "sql/DDL.sql"
+if sys.platform.startswith('win'):
+    """Running on windows"""
+    FICHIER_DDL = "../" + FICHIER_DDL
