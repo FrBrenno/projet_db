@@ -34,7 +34,7 @@ def create_tables(mycursor):
         "CREATE TABLE IF NOT EXISTS patients (NISS BIGINT, nom TEXT, prenom TEXT, date_de_naissance DATE, genre INT, inami_medecin BIGINT, inami_pharmacien BIGINT, mail TEXT, telephone BIGINT)")
     mycursor.execute("CREATE TABLE IF NOT EXISTS pharmaciens (inami BIGINT, nom TEXT, mail TEXT, telephone BIGINT)")
     mycursor.execute(
-        "CREATE TABLE IF NOT EXISTS diagnostiques (NISS BIGINT, date_diagnostic DATE, naissance DATE, pathology TEXT, specialite TEXT)")
+        "CREATE TABLE IF NOT EXISTS diagnostiques (NISS BIGINT, date_diagnostic DATE, naissance DATE, pathologie TEXT, specialite TEXT)")
     mycursor.execute(
         "CREATE TABLE IF NOT EXISTS specialites (nom TEXT, systeme_anatomique TEXT)")
 

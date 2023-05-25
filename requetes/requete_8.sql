@@ -1,4 +1,4 @@
-SELECT pathology, COUNT(*) AS diagnosis_count 
+SELECT pathologie, COUNT(*) AS diagnosis_count 
 FROM diagnostiques 
-GROUP BY pathology 
+GROUP BY pathologie 
 ORDER BY diagnosis_count DESC LIMIT 100

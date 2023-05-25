@@ -110,15 +110,15 @@ def import_diagnostique_xml(diagnostique_xml, mycursor):
         naissance_mauvais_format = diagnostic.find('naissance').text
         naissance = convert_data_format(naissance_mauvais_format)
 
-        pathology = diagnostic.find('pathology').text
+        pathologie = diagnostic.find('pathology').text
         specialite = diagnostic.find('specialite').text
         if specialite == " Dermatologie et vénérologie":
             specialite = "Dermatologie et vénérologie"
         elif specialite == " Gynécologie médicale":
             specialite = "Gynécologie médicale"
         mycursor.execute(
-            "INSERT INTO diagnostiques (NISS, date_diagnostic, naissance, pathology, specialite) VALUES (%s, %s, %s, %s, %s)",
-            (NISS, date_diagnostic, naissance, pathology, specialite))
+            "INSERT INTO diagnostiques (NISS, date_diagnostic, naissance, pathologie, specialite) VALUES (%s, %s, %s, %s, %s)",
+            (NISS, date_diagnostic, naissance, pathologie, specialite))
 
 
 def import_pharmacien_xml(pharmaciens_xml, mycursor):

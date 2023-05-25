@@ -97,7 +97,7 @@ def requete_changer_pharmacien(mycursor, NISS, inami_pharmacien):
 
 
 def requet_voir_info_medical(mycursor, NISS):
-    mycursor.execute("SELECT date_diagnostic, pathology, specialite FROM diagnostiques WHERE NISS = %s", (NISS,))
+    mycursor.execute("SELECT date_diagnostic, pathologie, specialite FROM diagnostiques WHERE NISS = %s", (NISS,))
     res = []
     for x in mycursor:
         x = list(x)
