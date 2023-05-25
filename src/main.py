@@ -23,8 +23,6 @@ def afficher_popup(window_size):
     return popup
 
 
-
-
 class MainApplication(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
@@ -577,7 +575,6 @@ class PopupWindow(tk.Toplevel):
         if data_validated:
             self.parent.handle_submitted_data(form_data, "pharmacien")
             self.destroy()
-
 
 def reset_db():
     print("DELETING DATABASE...")
