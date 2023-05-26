@@ -1,4 +1,4 @@
-CREATE TABLE  specialites (
+CREATE TABLE specialites (
     nom VARCHAR(255),
     systeme_anatomique VARCHAR(255),
     PRIMARY KEY (nom, systeme_anatomique)
