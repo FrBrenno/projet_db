@@ -229,7 +229,6 @@ class MainApplication(tk.Frame):
                 affiche_menu_patient(niss)
 
             else:
-                """TODO popup erreur"""
                 popup_error = afficher_popup((200,100))
                 tk.Label(popup_error, text="NISS incorrect").pack()
 
