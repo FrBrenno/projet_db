@@ -345,15 +345,22 @@ class MainApplication(tk.Frame):
 
     def handle_submitted_data(self, data, type):
         self.text.delete('1.0', tk.END)
-        try:
-            if type == "patient":
+        if type == "patient":
+            try:
                 self.text.insert(tk.END, insert_patient(mycursor, data))
-            elif type == "medecin":
+            except:
+                self.text.insert(tk.END, "Erreur lors de l'insertion des données, veuillez vérifier les inami entrées")
+        elif type == "medecin":
+            try:
                 self.text.insert(tk.END, insert_medecin(mycursor, data))
-            elif type == "pharmacien":
+            except:
+                self.text.insert(tk.END, "Erreur lors de l'insertion des données, veuillez vérifier la spécialité entrées")
+        elif type == "pharmacien":
+            try:
                 self.text.insert(tk.END, insert_pharmacien(mycursor, data))
-        except:
-            self.text.insert(tk.END, "Erreur lors de l'insertion des données, vérifier les inami entrés")
+            except:
+                self.text.insert(tk.END, "Erreur lors de l'insertion des données, veuillez vérifier les données entrées")
+
         db.commit()
 
 class PopupWindow(tk.Toplevel):
