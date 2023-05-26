@@ -596,7 +596,7 @@ if __name__ == "__main__":
     reset_db()
     create_database(db)
 
-    mycursor.execute("USE mydatabase")
+    #mycursor.execute("USE mydatabase")
     import_data(db)
 
     """ GUI SETUP """
