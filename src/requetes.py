@@ -21,6 +21,10 @@ def run_requete(mycursor, num, param = None):
     print(query)
     print("OUAIS OUAIS")
     for x in mycursor:
+        x = list(x)
+        for i, y in enumerate(x):
+            if type(y) == datetime.date :
+                x[i] = y.strftime("%d/%m/%Y") + " "
         res += str(x) + "\n"
     return res
 

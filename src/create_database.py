@@ -28,12 +28,10 @@ def create_tables(mycursor, db):
     with open(FICHIER_DDL, "r") as f:
         commande = ""
         for line in f:
-            print(line)
             if line.startswith("CREATE TABLE"):
                 commande = ""
             if line.endswith(";\n"):
                 commande += line
-                print(commande)
                 mycursor.execute(commande)
                 db.commit()
 
