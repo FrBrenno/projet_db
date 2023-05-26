@@ -21,7 +21,6 @@ def run_requete(mycursor, num, param = None):
     print(query)
     print("OUAIS OUAIS")
     for x in mycursor:
-        print(x)
         x = list(x)
         for i, y in enumerate(x):
             if type(y) == datetime.date :
