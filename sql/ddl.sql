@@ -52,7 +52,6 @@ CREATE TABLE diagnostiques (
     FOREIGN KEY (NISS) REFERENCES patients(NISS),
     FOREIGN KEY (pathologie) REFERENCES pathologies(maladie),
     FOREIGN KEY (specialite) REFERENCES specialites(nom)
-
 );
 CREATE TABLE dossiers_patients (
     NISS_patient BIGINT,
