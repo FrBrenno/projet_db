@@ -1,8 +1,8 @@
-SELECT 
-	decade, 
+SELECT
+	decade,
     most_consumed_medication
 FROM (
-  SELECT 
+  SELECT
     CONCAT((YEAR(p.date_de_naissance) DIV 10)*10, '-', (YEAR(p.date_de_naissance) DIV 10)*10 + 9) AS decade,
     d.DCI AS most_consumed_medication,
     ROW_NUMBER() OVER (PARTITION BY CONCAT((YEAR(p.date_de_naissance) DIV 10)*10, '-', (YEAR(p.date_de_naissance) DIV 10)*10 + 9) ORDER BY COUNT(*) DESC) AS rn
