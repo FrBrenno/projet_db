@@ -15,4 +15,4 @@ FROM (
     GROUP BY decade, most_consumed_medication
 ) AS subquery
 GROUP BY decade
-ORDER BY decade ASC;
+
