@@ -345,12 +345,15 @@ class MainApplication(tk.Frame):
 
     def handle_submitted_data(self, data, type):
         self.text.delete('1.0', tk.END)
-        if type == "patient":
-            self.text.insert(tk.END, insert_patient(mycursor, data))
-        elif type == "medecin":
-            self.text.insert(tk.END, insert_medecin(mycursor, data))
-        elif type == "pharmacien":
-            self.text.insert(tk.END, insert_pharmacien(mycursor, data))
+        try:
+            if type == "patient":
+                self.text.insert(tk.END, insert_patient(mycursor, data))
+            elif type == "medecin":
+                self.text.insert(tk.END, insert_medecin(mycursor, data))
+            elif type == "pharmacien":
+                self.text.insert(tk.END, insert_pharmacien(mycursor, data))
+        except:
+            self.text.insert(tk.END, "Erreur lors de l'insertion des données, vérifier les inami entrés")
         db.commit()
 
 class PopupWindow(tk.Toplevel):
@@ -532,7 +535,7 @@ class PopupWindow(tk.Toplevel):
             self.submit_pharmacien()
 
     def submit_patient(self):
-        date_naissance = datetime.strftime(self.entry_date_naissance_patient.get_date(), "%Y-%m-%d")
+        date_naissance = datetime.datetime.strftime(self.entry_date_naissance_patient.get_date(), "%Y-%m-%d")
         form_data = [self.entry_niss_patient.get(),
                      self.entry_nom_patient.get().upper(),
                      self.entry_prenom_patient.get().capitalize(),
