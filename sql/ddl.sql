@@ -1,69 +1,66 @@
-CREATE TABLE IF NOT EXISTS medicaments (
-    dci TEXT,
-    nom_Commercial TEXT,
-    systeme_anatomique TEXT,
-    conditionnement INT,
-    PRIMARY KEY (dci(255),
-    nom_Commercial(255),
-    conditionnement)
+CREATE TABLE IF NOT EXISTS specialites (
+    nom VARCHAR(255),
+    systeme_anatomique VARCHAR(255),
+    PRIMARY KEY (nom, systeme_anatomique)
 );
-CREATE TABLE IF NOT EXISTS pathologies (
-    maladie TEXT,
-    specialite TEXT,
-    PRIMARY KEY (maladie(255), specialite(255))
+CREATE TABLE IF NOT EXISTS pharmaciens (
+    inami BIGINT PRIMARY KEY,
+    nom VARCHAR(255),
+    mail VARCHAR(255),
+    telephone BIGINT
 );
-CREATE TABLE IF NOT EXISTS medecins (
+CREATE TABLE  medecins (
     inami BIGINT PRIMARY KEY ,
-    nom TEXT,
-    specialite TEXT,
+    nom VARCHAR(255),
+    specialite VARCHAR(255),
     telephone BIGINT,
-    mail TEXT
+    mail VARCHAR(255),
+    FOREIGN KEY (specialite) REFERENCES specialites(nom)
+);
+CREATE TABLE  medicaments (
+    dci VARCHAR(255),
+    nom_Commercial VARCHAR(255),
+    systeme_anatomique VARCHAR(255),
+    conditionnement INT,
+    PRIMARY KEY (dci, nom_Commercial, conditionnement)
 );
 CREATE TABLE IF NOT EXISTS patients (
     NISS BIGINT PRIMARY KEY ,
-    nom TEXT, prenom TEXT,
+    nom VARCHAR(255), prenom VARCHAR(255),
     date_de_naissance DATE,
     genre INT,
     inami_medecin BIGINT,
     inami_pharmacien BIGINT,
-    mail TEXT,
-    telephone BIGINT
+    mail VARCHAR(255),
+    telephone BIGINT,
+    FOREIGN KEY (inami_medecin) REFERENCES medecins(inami),
+    FOREIGN KEY (inami_pharmacien) REFERENCES pharmaciens(inami)
 );
-CREATE TABLE IF NOT EXISTS pharmaciens (
-    inami BIGINT PRIMARY KEY ,
-    nom TEXT,
-    mail TEXT,
-    telephone BIGINT
+CREATE TABLE IF NOT EXISTS pathologies (
+    maladie VARCHAR(255),
+    specialite VARCHAR(255),
+    PRIMARY KEY (maladie, specialite)
 );
 CREATE TABLE IF NOT EXISTS diagnostiques (
     NISS BIGINT,
     date_diagnostic DATE,
     naissance DATE,
-    pathologie TEXT,
-    specialite TEXT,
+    pathologie VARCHAR(255),
+    specialite VARCHAR(255),
     PRIMARY KEY (NISS, date_diagnostic, pathologie(255))
-);
-CREATE TABLE IF NOT EXISTS specialites (
-    nom TEXT,
-    systeme_anatomique TEXT,
-    PRIMARY KEY (nom(255), systeme_anatomique(255))
 );
 CREATE TABLE IF NOT EXISTS dossiers_patients (
     NISS_patient BIGINT,
-    medecin TEXT,
+    medecin VARCHAR(255),
     inami_medecin BIGINT,
-    pharmacien TEXT,
+    pharmacien VARCHAR(255),
     inami_pharmacien BIGINT,
-    medicament_nom_commercial TEXT(255),
-    DCI TEXT(255), date_prescription DATE,
+    medicament_nom_commercial VARCHAR(255),
+    DCI VARCHAR(255), date_prescription DATE,
     date_vente DATE,
     duree_traitement INTEGER,
-    PRIMARY KEY (NISS_patient, medicament_nom_commercial(255), date_prescription),
     FOREIGN KEY (NISS_patient) REFERENCES patients(NISS),
-    FOREIGN KEY (medecin(255)) REFERENCES medecins(nom),
     FOREIGN KEY (inami_medecin) REFERENCES medecins(inami),
-    FOREIGN KEY (pharmacien(255)) REFERENCES pharmaciens(nom),
     FOREIGN KEY (inami_pharmacien) REFERENCES pharmaciens(inami),
-    FOREIGN KEY (medicament_nom_commercial(255)) REFERENCES medicaments(nom_Commercial),
-    FOREIGN KEY (DCI(255)) REFERENCES medicaments(dci)
+    FOREIGN KEY (DCI) REFERENCES medicaments(dci)
 );

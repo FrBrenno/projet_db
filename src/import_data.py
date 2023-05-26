@@ -27,18 +27,29 @@ def import_data(mydb):
     mycursor = mydb.cursor()
     mycursor.execute("USE mydatabase")
 
-    import_csv_data(mycursor)
-    import_xml_data(mycursor)
+    import_data_right_order(mycursor)
     # Sauvegarder les modifications
     mydb.commit()
     print("DONE.")
     print("APPLICATION IS READY TO USE.")
+
+def import_data_right_order(mycursor):
+    import_specialite_xml(SPECIALITES_XML, mycursor)
+    import_pharmacien_xml(PHARMACIENS_XML, mycursor)
+    import_medecin_xml(MEDECINS_XML, mycursor)
+    import_medicament_csv(MEDICAMENT_CSV, mycursor)
+    import_patient_xml(PATIENTS_XML, mycursor)
+    import_phatologies_csv(PHATOLOGIES_CSV, mycursor)
+    import_diagnostique_xml(DIAGNOSTIQUES_XML, mycursor)
+    import_dossier_patient_csv(DOSSIER_PATIENT_CSV, mycursor)
 
 
 def import_csv_data(mycursor):
     import_dossier_patient_csv(DOSSIER_PATIENT_CSV, mycursor)
     import_medicament_csv(MEDICAMENT_CSV, mycursor)
     import_phatologies_csv(PHATOLOGIES_CSV, mycursor)
+
+
 
 
 def import_phatologies_csv(pathologiques_csv, mycursor):
