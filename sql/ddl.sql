@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS diagnostiques (
     pathologie VARCHAR(255),
     specialite VARCHAR(255),
     PRIMARY KEY (NISS, date_diagnostic, pathologie(255)),
-    FOREIGN KEY (NISS) REFERENCES patients(NISS),
+    FOREIGN KEY (NISS) REFERENCES patients(NISS)
 );
 CREATE TABLE IF NOT EXISTS dossiers_patients (
     NISS_patient BIGINT,
