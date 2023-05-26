@@ -50,7 +50,9 @@ CREATE TABLE diagnostiques (
     specialite VARCHAR(255),
     PRIMARY KEY (NISS, date_diagnostic, pathologie(255)),
     FOREIGN KEY (NISS) REFERENCES patients(NISS),
-    FOREIGN KEY (pathologie) REFERENCES pathologies(maladie)
+    FOREIGN KEY (pathologie) REFERENCES pathologies(maladie),
+    FOREIGN KEY (specialite) REFERENCES specialites(nom)
+
 );
 CREATE TABLE dossiers_patients (
     NISS_patient BIGINT,
