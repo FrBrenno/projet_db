@@ -268,9 +268,14 @@ class MainApplication(tk.Frame):
             tk.Button(popup_general, text="Voir ses informations médicale", command=lambda: voir_info_medical(niss)).grid(row=9, column=0)
             tk.Button(popup_general, text="Voir ses traitements", command=lambda: voir_traitements(niss)).grid(row=9, column=1)
 
+            # adapte la taille de la grid
+            popup_general.grid_columnconfigure(0, weight=1)
+            popup_general.grid_columnconfigure(1, weight=1)
+
+
             # 1 zone de texte pour afficher les informations médicale et les traitements en dessous de la grid
             zone_text = tk.Text(popup_general, width=300, height=50)
-            zone_text.place(x=0, y=300)
+            zone_text.grid(row=10, columnspan=2)
 
             def voir_info_medical(niss_patient):
                 info_medical = requet_voir_info_medical(mycursor, niss_patient)
@@ -339,7 +344,6 @@ class MainApplication(tk.Frame):
         entry.pack(pady=10)
         submit_button = tk.Button(popup_general, text="Se connecter", command=check_NISS)
         submit_button.pack()
-
 
 
     def handle_submitted_data(self, data, type):
