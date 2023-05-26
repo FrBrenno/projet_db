@@ -13,7 +13,6 @@ def create_database(mydb):
 
 
 def clear_data(mycursor):
-    mycursor.execute("DELETE FROM dossiers_patients")
     mycursor.execute("DELETE FROM medicaments")
     mycursor.execute("DELETE FROM pathologies")
     mycursor.execute("DELETE FROM medecins")
@@ -21,10 +20,20 @@ def clear_data(mycursor):
     mycursor.execute("DELETE FROM pharmaciens")
     mycursor.execute("DELETE FROM diagnostiques")
     mycursor.execute("DELETE FROM specialites")
+    mycursor.execute("DELETE FROM dossiers_patients")
 
 
 def create_tables(mycursor):
     print("CREATING TABLES")
     with open(FICHIER_DDL, "r") as f:
+        commande = ""
         for line in f:
-            mycursor.execute(line)
+            if line.startswith("CREATE TABLE"):
+                commande = ""
+            if line.endswith(";\n"):
+                commande += line
+                print(commande)
+                mycursor.execute(commande)
+                commande = ""
+            else:
+                commande += line

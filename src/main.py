@@ -593,7 +593,7 @@ if __name__ == "__main__":
         auth_plugin='mysql_native_password'
     )
     mycursor = db.cursor()
-    reset_db()
+    #reset_db()
     create_database(db)
 
     mycursor.execute("USE mydatabase")
