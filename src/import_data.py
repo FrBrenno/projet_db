@@ -44,14 +44,6 @@ def import_data_right_order(mycursor):
     import_dossier_patient_csv(DOSSIER_PATIENT_CSV, mycursor)
 
 
-def import_csv_data(mycursor):
-    import_dossier_patient_csv(DOSSIER_PATIENT_CSV, mycursor)
-    import_medicament_csv(MEDICAMENT_CSV, mycursor)
-    import_phatologies_csv(PHATOLOGIES_CSV, mycursor)
-
-
-
-
 def import_phatologies_csv(pathologiques_csv, mycursor):
     with open(pathologiques_csv, encoding='utf-8') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',')
@@ -88,14 +80,6 @@ def import_dossier_patient_csv(dossier_patient_csv, mycursor):
                 mycursor.execute("INSERT INTO dossiers_patients (NISS_patient, medecin, inami_medecin, pharmacien, "
                                  "inami_pharmacien, medicament_nom_commercial, DCI, date_prescription, date_vente, "
                                  "duree_traitement) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", row)
-
-
-def import_xml_data(mycursor):
-    import_medecin_xml(MEDECINS_XML, mycursor)
-    import_patient_xml(PATIENTS_XML, mycursor)
-    import_pharmacien_xml(PHARMACIENS_XML, mycursor)
-    import_diagnostique_xml(DIAGNOSTIQUES_XML, mycursor)
-    import_specialite_xml(SPECIALITES_XML, mycursor)
 
 
 def import_specialite_xml(specialite_xml, mycursor):
